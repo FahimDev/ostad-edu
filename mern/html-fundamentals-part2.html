@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Fundamentals — Part 2: Structure, Text, Forms & Tables</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e27;--bg2:#131740;--bg3:#1a1f4d;
+  --green:#00ff88;--cyan:#00d9ff;--pink:#ff00ff;
+  --txt:#ffffff;--txt2:#a0aec0;--txt3:#718096;
+  --border:rgba(0,255,136,0.2);--code:#0d1117;
+  --warn:#fbbf24;--danger:#ef4444;--ok:#10b981;
+}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden}
+.bg-glow{position:fixed;inset:0;z-index:-1;opacity:.05;
+  background:radial-gradient(circle at 20% 50%,var(--green) 0%,transparent 50%),
+             radial-gradient(circle at 80% 20%,var(--cyan) 0%,transparent 50%),
+             radial-gradient(circle at 60% 80%,var(--pink) 0%,transparent 50%);
+  animation:bgp 12s ease-in-out infinite}
+@keyframes bgp{0%,100%{opacity:.05}50%{opacity:.09}}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:2.5rem 2rem;text-align:center;border-bottom:2px solid var(--border);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:linear-gradient(45deg,transparent,rgba(0,255,136,.06),transparent);animation:shine 8s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(200%) rotate(45deg)}}
+.hdr-badge{display:inline-block;background:linear-gradient(135deg,var(--green),var(--cyan));color:var(--bg);font-size:.8rem;font-weight:700;padding:.3rem 1rem;border-radius:20px;margin-bottom:1rem;letter-spacing:1px;position:relative;z-index:1}
+.hdr h1{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:700;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+.hdr p{color:var(--txt2);font-size:1rem;position:relative;z-index:1;margin-top:.5rem}
+.hdr-nav{display:flex;justify-content:center;gap:1rem;margin-top:1.25rem;position:relative;z-index:1;flex-wrap:wrap}
+.hdr-nav a{color:var(--txt2);text-decoration:none;font-size:.9rem;border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;transition:all .25s}
+.hdr-nav a:hover{color:var(--green);border-color:var(--green)}
+
+/* NAV */
+.nav-wrap{position:sticky;top:0;background:rgba(10,14,39,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;padding:0 1.5rem}
+.nav-tabs{display:flex;gap:.4rem;overflow-x:auto;padding:.7rem 0;scrollbar-width:thin;scrollbar-color:var(--green) var(--bg2)}
+.nav-tabs::-webkit-scrollbar{height:3px}
+.nav-tabs::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px}
+.tab{background:transparent;color:var(--txt2);border:1px solid var(--border);padding:.6rem 1.3rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;white-space:nowrap;transition:all .25s;font-family:'Manrope',sans-serif;position:relative;overflow:hidden}
+.tab::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,255,136,.15),transparent);transition:left .4s}
+.tab:hover::before{left:100%}
+.tab:hover{border-color:var(--green);color:var(--txt);transform:translateY(-2px)}
+.tab.on{background:linear-gradient(135deg,var(--green),var(--cyan));color:var(--bg);font-weight:700;border-color:transparent}
+.prog-bar{height:3px;background:rgba(0,255,136,.1)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .3s}
+
+/* LAYOUT */
+.wrap{max-width:1300px;margin:0 auto;padding:2.5rem 1.5rem}
+.sec{display:none;animation:fadeUp .4s ease-out}
+.sec.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION HEADER */
+.stitle{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+.ssub{font-size:1rem;color:var(--txt2);margin-bottom:2rem;line-height:1.6}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:2rem;transition:all .3s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--pink));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.card:hover::before{transform:scaleX(1)}
+.card:hover{border-color:rgba(0,255,136,.45);box-shadow:0 12px 40px rgba(0,255,136,.12)}
+.ctitle{font-family:'Space Grotesk',sans-serif;font-size:1.55rem;font-weight:600;color:var(--green);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+
+/* CODE BLOCKS */
+.code{background:var(--code);border:1px solid rgba(0,255,136,.2);border-radius:10px;padding:1.5rem;margin:1.25rem 0;font-family:'Fira Code',monospace;font-size:.875rem;line-height:1.7;overflow-x:auto;position:relative;white-space:pre}
+.code::before{content:attr(data-lang);position:absolute;top:.4rem;right:.75rem;font-size:.68rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;font-family:'Manrope',sans-serif}
+.kw{color:#ff79c6}.str{color:#00ff88}.cmt{color:#6272a4;font-style:italic}.fn{color:#00d9ff}.num{color:#fbbf24}.tg{color:#ff6e6e}.at{color:#8be9fd}.val{color:#f1fa8c}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.1rem;margin:1.5rem 0}
+.kbox{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem;transition:all .25s}
+.kbox:hover{border-color:var(--cyan);transform:scale(1.02)}
+.kbox h4{color:var(--cyan);margin-bottom:.4rem;font-size:1rem;font-weight:600}
+.kbox p{color:var(--txt2);font-size:.9rem}
+
+/* CALLOUTS */
+.rw{background:linear-gradient(135deg,rgba(0,255,136,.07),rgba(0,217,255,.07));border-left:4px solid var(--green);border-radius:0 10px 10px 0;padding:1.5rem;margin:1.75rem 0}
+.rw-t{font-weight:600;color:var(--green);margin-bottom:.6rem;font-size:1rem;display:flex;align-items:center;gap:.4rem}
+.tips{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(239,68,68,.07));border-left:4px solid var(--warn);border-radius:0 10px 10px 0;padding:1.5rem;margin:1.75rem 0}
+.tips-t{font-weight:600;color:var(--warn);margin-bottom:.75rem;font-size:1rem;display:flex;align-items:center;gap:.4rem}
+.tips ul{margin-left:1.25rem}
+.tips li{margin-bottom:.75rem;color:var(--txt2);line-height:1.65}
+.tips li strong{color:var(--txt)}
+.warn-box{background:rgba(239,68,68,.08);border-left:4px solid var(--danger);border-radius:0 10px 10px 0;padding:1.25rem;margin:1.25rem 0}
+.warn-box strong{color:var(--danger)}
+.ok-box{background:rgba(16,185,129,.08);border-left:4px solid var(--ok);border-radius:0 10px 10px 0;padding:1.25rem;margin:1.25rem 0}
+.ok-box strong{color:var(--ok)}
+
+/* SIM */
+.sim{background:var(--bg3);border:2px dashed rgba(0,217,255,.3);border-radius:14px;padding:1.75rem;margin:1.5rem 0;min-height:100px}
+.sim-t{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;color:var(--cyan);margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+
+/* DEMO */
+.demo{background:#fff;color:#222;border-radius:12px;padding:1.75rem;margin:1.25rem 0;border:2px solid var(--green)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:1.25rem 0;border-radius:12px;overflow:hidden}
+.tbl thead{background:linear-gradient(135deg,#00684A,#00ED64);color:#0a0e27}
+.tbl th,.tbl td{padding:.85rem 1rem;text-align:left;font-size:.92rem}
+.tbl td{color:var(--txt2);border-bottom:1px solid var(--border)}
+.tbl tbody tr:hover{background:var(--bg3)}
+.tbl code{background:rgba(0,255,136,.12);color:var(--green);padding:.15rem .45rem;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem}
+
+/* BTN */
+.btn{background:linear-gradient(135deg,var(--green),var(--cyan));color:var(--bg);border:none;padding:.65rem 1.4rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;transition:all .25s;margin:.35rem;font-family:'Manrope',sans-serif}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,255,136,.35)}
+.btn:active{transform:translateY(0)}
+.btn-sec{background:transparent;color:var(--cyan);border:1px solid var(--cyan)}
+.btn-sec:hover{background:rgba(0,217,255,.1)}
+
+/* BADGE */
+.b{display:inline-block;padding:.18rem .6rem;border-radius:20px;font-size:.78rem;font-weight:700}
+.b-ok{background:var(--ok);color:#fff}
+.b-no{background:var(--danger);color:#fff}
+.b-warn{background:var(--warn);color:#000}
+.b-info{background:var(--cyan);color:var(--bg)}
+
+/* DOM TREE VIS */
+.dom-tree{font-family:'Fira Code',monospace;font-size:.88rem;margin:1rem 0}
+.dom-node{padding:.35rem .75rem;margin:.2rem 0;border-radius:6px;display:inline-block;cursor:pointer;transition:all .2s}
+.dom-node:hover{transform:scale(1.05)}
+.dn-html{background:rgba(255,121,198,.2);color:#ff79c6;border:1px solid rgba(255,121,198,.4)}
+.dn-head{background:rgba(0,217,255,.2);color:#00d9ff;border:1px solid rgba(0,217,255,.4)}
+.dn-body{background:rgba(0,255,136,.2);color:#00ff88;border:1px solid rgba(0,255,136,.4)}
+.dn-el{background:rgba(241,250,140,.15);color:#f1fa8c;border:1px solid rgba(241,250,140,.3)}
+.dn-txt{background:rgba(139,233,253,.1);color:#8be9fd;border:1px solid rgba(139,233,253,.2);font-style:italic}
+.ml1{margin-left:1.5rem}.ml2{margin-left:3rem}.ml3{margin-left:4.5rem}.ml4{margin-left:6rem}
+
+/* LIVE EDITOR */
+.editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.25rem 0}
+.editor-pane{display:flex;flex-direction:column;gap:.5rem}
+.editor-label{font-size:.8rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+textarea.editor{background:var(--code);color:#abb2bf;border:1px solid rgba(0,255,136,.25);border-radius:10px;padding:1rem;font-family:'Fira Code',monospace;font-size:.85rem;resize:vertical;min-height:200px;line-height:1.6;outline:none}
+textarea.editor:focus{border-color:var(--green)}
+.preview-pane{background:#fff;border:2px solid var(--green);border-radius:10px;padding:1rem;min-height:200px;overflow:auto}
+
+/* FORM DEMO */
+.form-demo{display:flex;flex-direction:column;gap:1rem}
+.form-demo label{display:block;margin-bottom:.3rem;font-weight:600;color:#555;font-size:.9rem}
+.form-demo input,.form-demo select,.form-demo textarea{width:100%;padding:.6rem .85rem;border:2px solid #ddd;border-radius:6px;font-size:.95rem;transition:border-color .2s;font-family:'Manrope',sans-serif}
+.form-demo input:focus,.form-demo select:focus,.form-demo textarea:focus{border-color:#667eea;outline:none}
+.form-demo input:invalid{border-color:#ef4444}
+.form-demo input:valid{border-color:#10b981}
+.form-group{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.submit-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .25s}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(102,126,234,.4)}
+.validation-msg{font-size:.8rem;margin-top:.25rem}
+.val-ok{color:#10b981}
+.val-err{color:#ef4444}
+
+/* TABLE DEMO */
+.tbl-demo{width:100%;border-collapse:collapse}
+.tbl-demo th{background:#667eea;color:#fff;padding:.75rem 1rem;text-align:left}
+.tbl-demo td{padding:.75rem 1rem;border-bottom:1px solid #eee;color:#333}
+.tbl-demo tr:nth-child(even){background:#f9f9f9}
+.tbl-demo tr:hover td{background:#eef2ff}
+
+/* META PREVIEW */
+.meta-preview{background:#fff;border-radius:12px;padding:1.5rem;margin:1rem 0;font-family:Arial,sans-serif}
+.mp-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;max-width:500px}
+.mp-img{height:140px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem}
+.mp-body{padding:1rem}
+.mp-domain{font-size:.75rem;color:#666;text-transform:uppercase;margin-bottom:.25rem}
+.mp-title{font-size:1.1rem;font-weight:700;color:#1a1a1a;margin-bottom:.35rem}
+.mp-desc{font-size:.88rem;color:#555}
+
+/* COLSPAN VIS */
+.span-demo{width:100%;border-collapse:collapse;margin:1rem 0}
+.span-demo th,.span-demo td{border:2px solid #667eea;padding:.65rem;text-align:center;color:#222}
+.span-demo th{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.sp-highlight{background:#eef2ff;font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hdr h1{font-size:1.9rem}
+  .stitle{font-size:1.75rem}
+  .editor-wrap{grid-template-columns:1fr}
+  .form-group{grid-template-columns:1fr}
+  .http-vis{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header class="hdr">
+  <div class="hdr-badge">PART 2 OF 3</div>
+  <h1>🏗️ HTML Fundamentals</h1>
+  <p>Structure · Text Formatting · Forms · Tables — with live editors and interactive demos</p>
+  <div class="hdr-nav">
+    <a href="web-essentials-part1.html">← Part 1: Web Essentials</a>
+    <a href="html-advanced-part3.html">Part 3: Multimedia & Semantic →</a>
+  </div>
+</header>
+
+<nav class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="tab on"  onclick="show('html-structure',this)">🏗️ HTML Structure</button>
+    <button class="tab"     onclick="show('text-formatting',this)">✍️ Text Formatting</button>
+    <button class="tab"     onclick="show('forms',this)">📋 Forms</button>
+    <button class="tab"     onclick="show('tables',this)">📊 Tables</button>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog" style="width:25%"></div></div>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 1 — HTML STRUCTURE                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="html-structure" class="sec on">
+  <h2 class="stitle">HTML Structure & Document Anatomy</h2>
+  <p class="ssub">Every webpage is a structured document. Understanding what goes where — and why — is the foundation of everything else.</p>
+
+  <!-- SKELETON -->
+  <div class="card">
+    <h3 class="ctitle"><span>📄</span> The Complete HTML5 Document</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">Every valid HTML page starts with this exact skeleton. Open your browser's DevTools on any major website — you'll see this same structure.</p>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- Line 1: MUST be first. Tells browser to use HTML5 standards mode --&gt;</span>
+<span class="kw">&lt;!DOCTYPE html&gt;</span>
+
+<span class="cmt">&lt;!-- Root element. lang= helps screen readers and SEO --&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="val">"en"</span><span class="tg">&gt;</span>
+
+<span class="tg">&lt;head&gt;</span>
+  <span class="cmt">&lt;!-- CHARACTER SET — always first inside head --&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">charset</span>=<span class="val">"UTF-8"</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- VIEWPORT — makes site responsive on mobile --&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"viewport"</span> <span class="at">content</span>=<span class="val">"width=device-width, initial-scale=1.0"</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- SEO meta tags --&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"description"</span> <span class="at">content</span>=<span class="val">"Page description for Google (150-160 chars)"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"keywords"</span> <span class="at">content</span>=<span class="val">"html, web, tutorial"</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- Shows in browser tab + Google search result title --&gt;</span>
+  <span class="tg">&lt;title&gt;</span>My Awesome Website<span class="tg">&lt;/title&gt;</span>
+
+  <span class="cmt">&lt;!-- Favicon (icon in browser tab) --&gt;</span>
+  <span class="tg">&lt;link</span> <span class="at">rel</span>=<span class="val">"icon"</span> <span class="at">href</span>=<span class="val">"favicon.ico"</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- External CSS --&gt;</span>
+  <span class="tg">&lt;link</span> <span class="at">rel</span>=<span class="val">"stylesheet"</span> <span class="at">href</span>=<span class="val">"styles.css"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/head&gt;</span>
+
+<span class="tg">&lt;body&gt;</span>
+  <span class="cmt">&lt;!-- All VISIBLE content lives here --&gt;</span>
+  <span class="tg">&lt;h1&gt;</span>Hello World<span class="tg">&lt;/h1&gt;</span>
+  <span class="tg">&lt;p&gt;</span>My first paragraph.<span class="tg">&lt;/p&gt;</span>
+
+  <span class="cmt">&lt;!-- JS at bottom of body = page renders before scripts run --&gt;</span>
+  <span class="tg">&lt;script</span> <span class="at">src</span>=<span class="val">"app.js"</span><span class="tg">&gt;&lt;/script&gt;</span>
+<span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span></div>
+  </div>
+
+  <!-- DOM TREE -->
+  <div class="card">
+    <h3 class="ctitle"><span>🌳</span> The DOM Tree — How Browsers See Your HTML</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">When a browser reads your HTML it builds a <strong>Document Object Model</strong> — a tree of objects JavaScript can read and modify. Understanding the DOM is critical for JavaScript development.</p>
+
+    <div class="sim">
+      <div class="sim-t">🌳 DOM Tree Visualizer — click any node</div>
+      <div class="dom-tree" id="domTree">
+        <div class="dom-node dn-html ml0" onclick="showDomInfo('html')">📦 &lt;html&gt;</div>
+        <div class="dom-node dn-head ml1" onclick="showDomInfo('head')">🔖 &lt;head&gt;</div>
+        <div class="dom-node dn-el ml2" onclick="showDomInfo('title')">&lt;title&gt;</div>
+        <div class="dom-node dn-txt ml3" onclick="showDomInfo('txt')">"My Website" (text node)</div>
+        <div class="dom-node dn-el ml2" onclick="showDomInfo('meta')">&lt;meta charset="UTF-8"&gt;</div>
+        <div class="dom-node dn-body ml1" onclick="showDomInfo('body')">📄 &lt;body&gt;</div>
+        <div class="dom-node dn-el ml2" onclick="showDomInfo('h1')">&lt;h1 id="main"&gt;</div>
+        <div class="dom-node dn-txt ml3" onclick="showDomInfo('h1txt')">"Hello World" (text node)</div>
+        <div class="dom-node dn-el ml2" onclick="showDomInfo('p')">&lt;p class="intro"&gt;</div>
+        <div class="dom-node dn-txt ml3" onclick="showDomInfo('ptxt')">"First paragraph…" (text node)</div>
+        <div class="dom-node dn-el ml2" onclick="showDomInfo('div')">&lt;div class="container"&gt;</div>
+        <div class="dom-node dn-el ml3" onclick="showDomInfo('img')">&lt;img src="photo.jpg" alt="…"&gt;</div>
+      </div>
+      <div id="domInfo" style="margin-top:1rem;padding:1rem;background:var(--bg2);border-radius:8px;display:none;font-size:.9rem;color:var(--txt2)"></div>
+    </div>
+
+    <div class="grid">
+      <div class="kbox"><h4>Element Nodes</h4><p>Every HTML tag becomes an element node. Can have children, attributes, and event listeners attached via JS.</p></div>
+      <div class="kbox"><h4>Text Nodes</h4><p>The actual text content between tags. Even whitespace is a text node! Often forgotten by beginners.</p></div>
+      <div class="kbox"><h4>Attribute Nodes</h4><p>id, class, href, src etc. Accessible via JS: element.getAttribute('href') or element.id</p></div>
+      <div class="kbox"><h4>JS Can Change Everything</h4><p>document.getElementById(), querySelector(), innerHTML — all navigate this tree to read/update the page live.</p></div>
+    </div>
+  </div>
+
+  <!-- META TAGS & OG -->
+  <div class="card">
+    <h3 class="ctitle"><span>🔗</span> Open Graph & Social Media Meta Tags</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">Those rich preview cards you see when sharing links on Facebook, WhatsApp, or Twitter — they're 100% driven by meta tags in &lt;head&gt;.</p>
+
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- ── OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ── --&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">property</span>=<span class="val">"og:title"</span>       <span class="at">content</span>=<span class="val">"iPhone 15 Pro Review"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">property</span>=<span class="val">"og:description"</span>  <span class="at">content</span>=<span class="val">"The best smartphone of 2024?"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">property</span>=<span class="val">"og:image"</span>       <span class="at">content</span>=<span class="val">"https://example.com/iphone-og.jpg"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">property</span>=<span class="val">"og:url"</span>         <span class="at">content</span>=<span class="val">"https://example.com/iphone-review"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">property</span>=<span class="val">"og:type"</span>        <span class="at">content</span>=<span class="val">"article"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- ── TWITTER CARD ── --&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"twitter:card"</span>        <span class="at">content</span>=<span class="val">"summary_large_image"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"twitter:title"</span>       <span class="at">content</span>=<span class="val">"iPhone 15 Pro Review"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"twitter:description"</span>  <span class="at">content</span>=<span class="val">"The best smartphone of 2024?"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="val">"twitter:image"</span>       <span class="at">content</span>=<span class="val">"https://example.com/iphone-twitter.jpg"</span><span class="tg">&gt;</span></div>
+
+    <div style="margin-top:1.5rem">
+      <p style="color:var(--txt2);margin-bottom:1rem;font-size:.95rem"><strong style="color:var(--txt)">Preview — what WhatsApp/Facebook shows when your link is shared:</strong></p>
+      <div class="meta-preview">
+        <div class="mp-card">
+          <div class="mp-img">📱 OG Image (1200×630px)</div>
+          <div class="mp-body">
+            <div class="mp-domain">example.com</div>
+            <div class="mp-title">iPhone 15 Pro Review</div>
+            <div class="mp-desc">The best smartphone of 2024? We test every feature after 30 days of use.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE EDITOR -->
+  <div class="card">
+    <h3 class="ctitle"><span>⚡</span> Live HTML Editor — Type and See Results Instantly</h3>
+    <div class="editor-wrap">
+      <div class="editor-pane">
+        <div class="editor-label">✏️ Your HTML</div>
+        <textarea class="editor" id="liveEditor" oninput="updatePreview()">&lt;h1&gt;My Page Title&lt;/h1&gt;
+&lt;p&gt;This is a &lt;strong&gt;paragraph&lt;/strong&gt; with &lt;em&gt;italic text&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Section Heading&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;First item&lt;/li&gt;
+  &lt;li&gt;Second item&lt;/li&gt;
+  &lt;li&gt;Third item&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a href="#"&gt;Click me&lt;/a&gt;</textarea>
+      </div>
+      <div class="editor-pane">
+        <div class="editor-label">👁️ Live Preview</div>
+        <div class="preview-pane" id="livePreview"></div>
+      </div>
+    </div>
+    <p style="color:var(--txt3);font-size:.85rem;margin-top:.5rem">💡 Edit the HTML on the left — the browser renders it instantly on the right.</p>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: Google Crawls Your &lt;head&gt;</div>
+    <p style="color:var(--txt2)">When Googlebot visits your site it reads the &lt;head&gt; to decide how to rank and display you in search results. The &lt;title&gt; tag becomes your blue clickable link. The &lt;meta description&gt; becomes the grey snippet below it. A missing or poorly written description costs you click-through rate even when you rank #1. Companies like Shopify, HubSpot, and WordPress auto-generate these from page content for exactly this reason.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: What does &lt;!DOCTYPE html&gt; do?</strong><br>Switches browser into standards mode (vs quirks mode which mimics old IE bugs). Without it you get inconsistent rendering across browsers. Always first line.</li>
+      <li><strong>Q: Difference between &lt;head&gt; and &lt;body&gt;?</strong><br>&lt;head&gt; = metadata (title, CSS links, meta tags, scripts) — not visible. &lt;body&gt; = all visible content. Browser parses head first to know what resources to download before rendering.</li>
+      <li><strong>Q: What is the DOM and why does it matter for JavaScript?</strong><br>DOM is the browser's tree-structured representation of HTML. JS interacts with the DOM to dynamically change content, style, and structure without reloading the page. React/Vue/Angular are all just fancy ways to manipulate the DOM efficiently.</li>
+      <li><strong>Q: Why put &lt;script&gt; at the bottom of &lt;body&gt;?</strong><br>HTML renders top to bottom. Script in &lt;head&gt; blocks rendering until JS downloads and executes. Bottom placement means users see content faster. Alternatively use defer or async attributes on the script tag.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 2 — TEXT FORMATTING                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="text-formatting" class="sec">
+  <h2 class="stitle">Text Formatting Tags</h2>
+  <p class="ssub">HTML gives you tags that carry meaning, not just appearance. The difference matters for accessibility, SEO, and screen readers.</p>
+
+  <!-- HEADINGS -->
+  <div class="card">
+    <h3 class="ctitle"><span>📐</span> Headings — h1 through h6</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">Headings define page hierarchy. Google uses them to understand your content. Screen readers use them to navigate. Think of them as your document's outline.</p>
+    <div class="demo">
+      <h1 style="font-size:2.2em;margin-bottom:.3rem;color:#1a1a1a">h1 — Main Page Title (ONE per page!)</h1>
+      <h2 style="font-size:1.75em;margin-bottom:.3rem;color:#2d2d2d">h2 — Major Section (About, Services, Contact)</h2>
+      <h3 style="font-size:1.45em;margin-bottom:.3rem;color:#3d3d3d">h3 — Sub-section (What We Do, Our Team)</h3>
+      <h4 style="font-size:1.2em;margin-bottom:.3rem;color:#4d4d4d">h4 — Minor heading</h4>
+      <h5 style="font-size:1.05em;margin-bottom:.3rem;color:#5d5d5d">h5 — Rarely needed</h5>
+      <h6 style="font-size:.9em;color:#6d6d6d">h6 — Smallest, use sparingly</h6>
+    </div>
+    <div class="warn-box"><strong>⚠️ Common Mistake:</strong> Don't use headings just to make text big. Use them for hierarchy. Use CSS for size. One &lt;h1&gt; per page — it tells Google what the page is about. Multiple h1s confuse crawlers.</div>
+  </div>
+
+  <!-- INLINE TAGS -->
+  <div class="card">
+    <h3 class="ctitle"><span>✨</span> Inline Formatting — Semantic vs Presentational</h3>
+    <p style="color:var(--txt2);margin-bottom:1.5rem">The key distinction: <strong style="color:var(--green)">semantic tags</strong> carry meaning (screen readers announce them differently), <strong style="color:var(--cyan)">presentational tags</strong> are just visual.</p>
+
+    <table class="tbl">
+      <thead><tr><th>Tag</th><th>Meaning / Purpose</th><th>Result</th><th>Semantic?</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;strong&gt;</code></td><td>Important text — screen reader emphasises</td><td><strong style="color:#333">bold & important</strong></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;b&gt;</code></td><td>Bold, no extra importance implied</td><td><b style="color:#333">just bold</b></td><td><span class="b b-no">No</span></td></tr>
+        <tr><td><code>&lt;em&gt;</code></td><td>Emphasis — changes spoken stress</td><td><em style="color:#333">stressed italic</em></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;i&gt;</code></td><td>Alt voice (foreign words, ship names)</td><td><i style="color:#333">visual italic</i></td><td><span class="b b-no">No</span></td></tr>
+        <tr><td><code>&lt;mark&gt;</code></td><td>Highlighted/relevant text</td><td><mark>highlighted</mark></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;del&gt;</code></td><td>Deleted / removed content</td><td><del style="color:#333">struck through</del></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;ins&gt;</code></td><td>Inserted / added content</td><td><ins style="color:#333">underlined insert</ins></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;small&gt;</code></td><td>Fine print, copyright, disclaimers</td><td><small style="color:#333">smaller text</small></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;sub&gt;</code></td><td>Subscript (chemistry, math)</td><td style="color:#333">H<sub>2</sub>O</td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;sup&gt;</code></td><td>Superscript (footnotes, powers)</td><td style="color:#333">x<sup>2</sup></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;code&gt;</code></td><td>Inline code snippet</td><td><code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;font-family:monospace;color:#c7254e">let x = 5</code></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;abbr&gt;</code></td><td>Abbreviation with tooltip on hover</td><td><abbr title="HyperText Markup Language" style="cursor:help;border-bottom:1px dotted #333;color:#333">HTML</abbr> ← hover</td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;q&gt;</code></td><td>Short inline quotation</td><td><q style="color:#333">inline quote</q></td><td><span class="b b-ok">Yes</span></td></tr>
+        <tr><td><code>&lt;kbd&gt;</code></td><td>Keyboard input</td><td><kbd style="background:#eee;border:1px solid #ccc;border-radius:3px;padding:1px 6px;font-family:monospace;color:#333">Ctrl+C</kbd></td><td><span class="b b-ok">Yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BLOCK TAGS -->
+  <div class="card">
+    <h3 class="ctitle"><span>📦</span> Block-level Text Elements</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- Paragraph — most common block text element --&gt;</span>
+<span class="tg">&lt;p&gt;</span>This is a paragraph. Browsers add top/bottom margin automatically.<span class="tg">&lt;/p&gt;</span>
+
+<span class="cmt">&lt;!-- Preformatted — preserves spaces and line breaks (code examples) --&gt;</span>
+<span class="tg">&lt;pre&gt;&lt;code&gt;</span>
+  function hello() {
+    console.log("indentation preserved!");
+  }
+<span class="tg">&lt;/code&gt;&lt;/pre&gt;</span>
+
+<span class="cmt">&lt;!-- Blockquote — long quotation from external source --&gt;</span>
+<span class="tg">&lt;blockquote</span> <span class="at">cite</span>=<span class="val">"https://source.com"</span><span class="tg">&gt;</span>
+  The best way to learn is by doing.
+  <span class="tg">&lt;footer&gt;</span>— Someone Smart<span class="tg">&lt;/footer&gt;</span>
+<span class="tg">&lt;/blockquote&gt;</span>
+
+<span class="cmt">&lt;!-- Horizontal rule — thematic break --&gt;</span>
+<span class="tg">&lt;hr&gt;</span>
+
+<span class="cmt">&lt;!-- Line break — use sparingly! Use CSS margin/padding instead for spacing --&gt;</span>
+<span class="tg">&lt;br&gt;</span></div>
+  </div>
+
+  <!-- LISTS -->
+  <div class="card">
+    <h3 class="ctitle"><span>📋</span> Lists — ul, ol, dl</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- UNORDERED LIST — order doesn't matter (bullets) --&gt;</span>
+<span class="tg">&lt;ul&gt;</span>
+  <span class="tg">&lt;li&gt;</span>HTML<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;li&gt;</span>CSS<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;li&gt;&lt;strong&gt;</span>JavaScript<span class="tg">&lt;/strong&gt;</span> — nested formatting works!<span class="tg">&lt;/li&gt;</span>
+<span class="tg">&lt;/ul&gt;</span>
+
+<span class="cmt">&lt;!-- ORDERED LIST — sequence matters (numbered steps) --&gt;</span>
+<span class="tg">&lt;ol&gt;</span>
+  <span class="tg">&lt;li&gt;</span>Clone the repository<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;li&gt;</span>Run npm install<span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;li&gt;</span>Start with npm run dev<span class="tg">&lt;/li&gt;</span>
+<span class="tg">&lt;/ol&gt;</span>
+
+<span class="cmt">&lt;!-- NESTED LIST —  a list inside a list --&gt;</span>
+<span class="tg">&lt;ul&gt;</span>
+  <span class="tg">&lt;li&gt;</span>Frontend
+    <span class="tg">&lt;ul&gt;</span>
+      <span class="tg">&lt;li&gt;</span>React<span class="tg">&lt;/li&gt;</span>
+      <span class="tg">&lt;li&gt;</span>Vue<span class="tg">&lt;/li&gt;</span>
+    <span class="tg">&lt;/ul&gt;</span>
+  <span class="tg">&lt;/li&gt;</span>
+  <span class="tg">&lt;li&gt;</span>Backend<span class="tg">&lt;/li&gt;</span>
+<span class="tg">&lt;/ul&gt;</span>
+
+<span class="cmt">&lt;!-- DESCRIPTION LIST — term + definition pairs (glossaries, FAQs) --&gt;</span>
+<span class="tg">&lt;dl&gt;</span>
+  <span class="tg">&lt;dt&gt;</span>API<span class="tg">&lt;/dt&gt;</span>
+  <span class="tg">&lt;dd&gt;</span>Application Programming Interface — a way for apps to talk to each other<span class="tg">&lt;/dd&gt;</span>
+  <span class="tg">&lt;dt&gt;</span>REST<span class="tg">&lt;/dt&gt;</span>
+  <span class="tg">&lt;dd&gt;</span>Representational State Transfer — architectural style for APIs<span class="tg">&lt;/dd&gt;</span>
+<span class="tg">&lt;/dl&gt;</span></div>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: Stack Overflow's Answer Formatting</div>
+    <p style="color:var(--txt2)">Stack Overflow uses almost every text tag in answers. Code snippets use <code style="color:var(--green)">&lt;code&gt;</code> and <code style="color:var(--green)">&lt;pre&gt;</code>. Keyboard shortcuts use <code style="color:var(--green)">&lt;kbd&gt;</code>. Important warnings use <code style="color:var(--green)">&lt;strong&gt;</code>. Deprecated solutions get <code style="color:var(--green)">&lt;del&gt;</code>. When you write a Stack Overflow answer in Markdown, the engine converts it to semantic HTML — meaning every piece of formatting maps to a tag with actual meaning, not just visual style.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: Difference between &lt;strong&gt; and &lt;b&gt;?</strong><br>&lt;strong&gt; has semantic importance — screen readers stress the word when reading aloud, and search engines give it weight. &lt;b&gt; is purely visual bolding. Always prefer &lt;strong&gt; for meaningful emphasis.</li>
+      <li><strong>Q: When would you use &lt;em&gt; vs &lt;i&gt;?</strong><br>&lt;em&gt; for real spoken emphasis: "I did &lt;em&gt;not&lt;/em&gt; say that". &lt;i&gt; for alternate voice — ship names, technical terms, foreign phrases: "the &lt;i&gt;Lorem Ipsum&lt;/i&gt; text".</li>
+      <li><strong>Q: How many &lt;h1&gt; tags per page?</strong><br>One. It represents the main topic of the page. Multiple h1s dilute your SEO signal. Use h2–h6 for hierarchy. Exception: inside &lt;article&gt; or &lt;section&gt; elements you may have sub-h1s, but the convention is still one per page.</li>
+      <li><strong>Q: When to use &lt;br&gt; vs margin in CSS?</strong><br>Use &lt;br&gt; only when the line break is part of the content (poem, address, song lyrics). For spacing between elements — always use CSS margin/padding. &lt;br&gt; inside a paragraph just for visual spacing is bad practice.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 3 — FORMS                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="forms" class="sec">
+  <h2 class="stitle">HTML Forms</h2>
+  <p class="ssub">Forms are how users send data to servers — every login, signup, search, checkout and feedback you've ever seen is an HTML form.</p>
+
+  <div class="card">
+    <h3 class="ctitle"><span>🧬</span> Form Anatomy</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- action: WHERE data goes  |  method: HOW it's sent --&gt;</span>
+<span class="tg">&lt;form</span> <span class="at">action</span>=<span class="val">"/api/register"</span> <span class="at">method</span>=<span class="val">"POST"</span> <span class="at">novalidate</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- label's for= must match input's id= — links them for click + accessibility --&gt;</span>
+  <span class="tg">&lt;label</span> <span class="at">for</span>=<span class="val">"email"</span><span class="tg">&gt;</span>Email Address<span class="tg">&lt;/label&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"email"</span> <span class="at">id</span>=<span class="val">"email"</span> <span class="at">name</span>=<span class="val">"email"</span>
+         <span class="at">placeholder</span>=<span class="val">"you@example.com"</span>
+         <span class="at">autocomplete</span>=<span class="val">"email"</span>
+         <span class="at">required</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- name= is the KEY sent to server. Without it, value won't be submitted! --&gt;</span>
+  <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"password"</span> <span class="at">id</span>=<span class="val">"pwd"</span> <span class="at">name</span>=<span class="val">"password"</span>
+         <span class="at">minlength</span>=<span class="val">"8"</span> <span class="at">required</span><span class="tg">&gt;</span>
+
+  <span class="cmt">&lt;!-- fieldset groups related inputs; legend = group title --&gt;</span>
+  <span class="tg">&lt;fieldset&gt;</span>
+    <span class="tg">&lt;legend&gt;</span>Account Type<span class="tg">&lt;/legend&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"radio"</span> <span class="at">id</span>=<span class="val">"r1"</span> <span class="at">name</span>=<span class="val">"type"</span> <span class="at">value</span>=<span class="val">"personal"</span> <span class="at">checked</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;label</span> <span class="at">for</span>=<span class="val">"r1"</span><span class="tg">&gt;</span>Personal<span class="tg">&lt;/label&gt;</span>
+    <span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"radio"</span> <span class="at">id</span>=<span class="val">"r2"</span> <span class="at">name</span>=<span class="val">"type"</span> <span class="at">value</span>=<span class="val">"business"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;label</span> <span class="at">for</span>=<span class="val">"r2"</span><span class="tg">&gt;</span>Business<span class="tg">&lt;/label&gt;</span>
+  <span class="tg">&lt;/fieldset&gt;</span>
+
+  <span class="cmt">&lt;!-- type="submit" submits the form; type="reset" clears all fields --&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">type</span>=<span class="val">"submit"</span><span class="tg">&gt;</span>Create Account<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;button</span> <span class="at">type</span>=<span class="val">"reset"</span><span class="tg">&gt;</span>Clear<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;/form&gt;</span></div>
+  </div>
+
+  <!-- INPUT TYPES -->
+  <div class="card">
+    <h3 class="ctitle"><span>🎛️</span> HTML5 Input Types — The Right Type = Free Validation + Better UX</h3>
+    <table class="tbl">
+      <thead><tr><th>type=</th><th>What it validates</th><th>Mobile Keyboard</th><th>Used by</th></tr></thead>
+      <tbody>
+        <tr><td><code>text</code></td><td>No built-in validation</td><td>Default QWERTY</td><td>Username, full name</td></tr>
+        <tr><td><code>email</code></td><td>Must contain @ and domain</td><td>Shows @ and .com</td><td>Gmail, every signup form</td></tr>
+        <tr><td><code>password</code></td><td>Masks characters</td><td>Default QWERTY</td><td>All login forms</td></tr>
+        <tr><td><code>number</code></td><td>Numeric only, min/max/step</td><td>Numeric keypad</td><td>Quantity pickers, age</td></tr>
+        <tr><td><code>tel</code></td><td>No validation (formats vary by country)</td><td>Phone keypad</td><td>bKash, Nagad forms</td></tr>
+        <tr><td><code>url</code></td><td>Must start with http:// or https://</td><td>Shows .com key</td><td>Link shorteners, profiles</td></tr>
+        <tr><td><code>date</code></td><td>Valid calendar date</td><td>Date picker</td><td>Airbnb check-in/out</td></tr>
+        <tr><td><code>datetime-local</code></td><td>Date + time</td><td>Date+time picker</td><td>Event scheduling, meetings</td></tr>
+        <tr><td><code>time</code></td><td>HH:MM format</td><td>Time picker</td><td>Alarm apps, scheduling</td></tr>
+        <tr><td><code>range</code></td><td>Drag slider between min/max</td><td>Slider</td><td>Volume, price filters</td></tr>
+        <tr><td><code>color</code></td><td>Hex color value</td><td>Color picker</td><td>Canva, Google Docs</td></tr>
+        <tr><td><code>file</code></td><td>File selection from device</td><td>File browser</td><td>Profile photo upload</td></tr>
+        <tr><td><code>checkbox</code></td><td>Boolean on/off</td><td>Tap toggle</td><td>Terms & conditions</td></tr>
+        <tr><td><code>radio</code></td><td>One of N options</td><td>Tap select</td><td>Gender, payment method</td></tr>
+        <tr><td><code>hidden</code></td><td>Not shown, sent with form</td><td>—</td><td>CSRF token, user ID</td></tr>
+        <tr><td><code>search</code></td><td>No built-in validation</td><td>Shows search key</td><td>Google, YouTube search bar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VALIDATION -->
+  <div class="card">
+    <h3 class="ctitle"><span>✅</span> Validation Attributes</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- required — field must have a value before submit --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"text"</span> <span class="at">required</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- minlength / maxlength — character count limits --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"password"</span> <span class="at">minlength</span>=<span class="val">"8"</span> <span class="at">maxlength</span>=<span class="val">"32"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- min / max / step — numeric range --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"number"</span> <span class="at">min</span>=<span class="val">"1"</span> <span class="at">max</span>=<span class="val">"10"</span> <span class="at">step</span>=<span class="val">"1"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- pattern — regex validation --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"text"</span> <span class="at">pattern</span>=<span class="val">"[A-Za-z]{3,20}"</span>
+       <span class="at">title</span>=<span class="val">"3–20 letters only"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- Bangladeshi phone: 01XXXXXXXXX --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"tel"</span> <span class="at">pattern</span>=<span class="val">"01[3-9][0-9]{8}"</span>
+       <span class="at">placeholder</span>=<span class="val">"01XXXXXXXXX"</span>
+       <span class="at">title</span>=<span class="val">"Valid BD phone number"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- disabled = greyed out, NOT submitted --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"text"</span> <span class="at">value</span>=<span class="val">"Read only"</span> <span class="at">disabled</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- readonly = shown and submitted, but user can't edit --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"text"</span> <span class="at">value</span>=<span class="val">"user@example.com"</span> <span class="at">readonly</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- autofocus = cursor placed here on page load --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"search"</span> <span class="at">autofocus</span> <span class="at">placeholder</span>=<span class="val">"Search..."</span><span class="tg">&gt;</span></div>
+  </div>
+
+  <!-- LIVE FORM DEMO -->
+  <div class="card">
+    <h3 class="ctitle"><span>🚀</span> Live Form Demo — Real Validation in Action</h3>
+    <p style="color:var(--txt2);margin-bottom:1.5rem">This form uses only HTML5 validation attributes — zero JavaScript. Fill it out and try submitting to see browser-native validation messages.</p>
+    <div class="demo">
+      <form class="form-demo" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <div>
+            <label>First Name *</label>
+            <input type="text" name="fname" placeholder="John" minlength="2" required>
+          </div>
+          <div>
+            <label>Last Name *</label>
+            <input type="text" name="lname" placeholder="Doe" minlength="2" required>
+          </div>
+        </div>
+        <div>
+          <label>Email Address *</label>
+          <input type="email" name="email" id="fEmail" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div>
+          <label>Phone Number</label>
+          <input type="tel" name="phone" placeholder="01XXXXXXXXX" pattern="01[3-9][0-9]{8}" title="Valid Bangladeshi phone number (11 digits)">
+        </div>
+        <div>
+          <label>Password * (min 8 characters)</label>
+          <input type="password" name="password" id="fPwd" minlength="8" placeholder="Min 8 characters" required oninput="checkPwd(this)">
+          <div class="validation-msg" id="pwdMsg"></div>
+        </div>
+        <div>
+          <label>Country</label>
+          <select name="country">
+            <option value="">-- Select Country --</option>
+            <option value="bd" selected>Bangladesh 🇧🇩</option>
+            <option value="us">United States 🇺🇸</option>
+            <option value="in">India 🇮🇳</option>
+            <option value="gb">United Kingdom 🇬🇧</option>
+          </select>
+        </div>
+        <div>
+          <label>Skills (select multiple with Ctrl/Cmd)</label>
+          <select name="skills" multiple size="4" style="height:auto">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="js">JavaScript</option>
+            <option value="react">React</option>
+            <option value="node">Node.js</option>
+            <option value="mongodb">MongoDB</option>
+          </select>
+        </div>
+        <div>
+          <label>Bio</label>
+          <textarea name="bio" rows="3" placeholder="Tell us about yourself (max 200 chars)" maxlength="200"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <input type="checkbox" id="terms" name="terms" required style="width:auto">
+          <label for="terms" style="margin-bottom:0">I agree to the Terms & Conditions *</label>
+        </div>
+        <button type="submit" class="submit-btn">Create Account →</button>
+      </form>
+      <div id="formResult" style="display:none;margin-top:1rem;padding:1rem;background:#d4edda;border-radius:8px;color:#155724;font-weight:600"></div>
+    </div>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: Daraz / Shopify Checkout Form</div>
+    <p style="color:var(--txt2)">Daraz's checkout form uses <code style="color:var(--green)">autocomplete</code> attributes so your browser can autofill name, address, and card details. <code style="color:var(--green)">type="tel"</code> brings up the phone keyboard on mobile. Hidden <code style="color:var(--green)">type="hidden"</code> fields pass your cart ID and CSRF security token to the server. The <code style="color:var(--green)">&lt;fieldset&gt;</code> groups delivery and billing addresses. File upload (<code style="color:var(--green)">type="file" accept="image/*"</code>) handles product return photo submissions.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: Difference between GET and POST form methods?</strong><br>GET appends data to URL (?name=value) — visible, bookmarkable, limited size (~2000 chars), cached. POST sends in body — invisible, no size limit, not cached. Use GET for search (shareable URL), POST for login/signup/payment (sensitive data).</li>
+      <li><strong>Q: What does the name attribute do? What if it's missing?</strong><br>name is the key in the key=value pair sent to server. Without name, the input value is silently ignored and never submitted. id is for CSS/JS. name is for the server. They can be the same but serve different purposes.</li>
+      <li><strong>Q: What is enctype="multipart/form-data"?</strong><br>Needed when uploading files. Default enctype (application/x-www-form-urlencoded) can't handle binary data. multipart splits the request into multiple parts — one per field. Without it, file uploads arrive as empty on the server.</li>
+      <li><strong>Q: Difference between disabled and readonly?</strong><br>disabled: greyed out, not sent to server, not focusable. readonly: can be focused and copied, value is sent to server, can't be edited. Use readonly for things like auto-filled order IDs. Use disabled for truly inactive fields.</li>
+      <li><strong>Q: How to prevent form submission with JavaScript?</strong><br>event.preventDefault() in the submit listener. Lets you validate first, show custom errors, or send via fetch/AJAX instead of full page reload. Pattern: form.addEventListener('submit', e => { e.preventDefault(); /* validate then fetch */ })</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 4 — TABLES                            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="tables" class="sec">
+  <h2 class="stitle">HTML Tables</h2>
+  <p class="ssub">Tables are for tabular data — rows and columns of related information. Never use them for page layout. That's what CSS Grid and Flexbox are for.</p>
+
+  <!-- ANATOMY -->
+  <div class="card">
+    <h3 class="ctitle"><span>🧩</span> Complete Table Anatomy</h3>
+    <div class="code" data-lang="HTML"><span class="tg">&lt;table&gt;</span>
+  <span class="cmt">&lt;!-- caption: table title for accessibility (like h1 for the table) --&gt;</span>
+  <span class="tg">&lt;caption&gt;</span>Top 3 Crypto Prices — 9 May 2025<span class="tg">&lt;/caption&gt;</span>
+
+  <span class="cmt">&lt;!-- thead: header row(s) — repeats when printing long tables --&gt;</span>
+  <span class="tg">&lt;thead&gt;</span>
+    <span class="tg">&lt;tr&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"col"</span><span class="tg">&gt;</span>Coin<span class="tg">&lt;/th&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"col"</span><span class="tg">&gt;</span>Price (USD)<span class="tg">&lt;/th&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"col"</span><span class="tg">&gt;</span>24h Change<span class="tg">&lt;/th&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"col"</span><span class="tg">&gt;</span>Market Cap<span class="tg">&lt;/th&gt;</span>
+    <span class="tg">&lt;/tr&gt;</span>
+  <span class="tg">&lt;/thead&gt;</span>
+
+  <span class="cmt">&lt;!-- tbody: actual data rows --&gt;</span>
+  <span class="tg">&lt;tbody&gt;</span>
+    <span class="tg">&lt;tr&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"row"</span><span class="tg">&gt;</span>Bitcoin (BTC)<span class="tg">&lt;/th&gt;</span>
+      <span class="tg">&lt;td&gt;</span>$62,450<span class="tg">&lt;/td&gt;</span>
+      <span class="tg">&lt;td</span> <span class="at">style</span>=<span class="val">"color:green"</span><span class="tg">&gt;</span>+2.4%<span class="tg">&lt;/td&gt;</span>
+      <span class="tg">&lt;td&gt;</span>$1.22T<span class="tg">&lt;/td&gt;</span>
+    <span class="tg">&lt;/tr&gt;</span>
+    <span class="tg">&lt;tr&gt;</span>
+      <span class="tg">&lt;th</span> <span class="at">scope</span>=<span class="val">"row"</span><span class="tg">&gt;</span>Ethereum (ETH)<span class="tg">&lt;/th&gt;</span>
+      <span class="tg">&lt;td&gt;</span>$3,120<span class="tg">&lt;/td&gt;</span>
+      <span class="tg">&lt;td</span> <span class="at">style</span>=<span class="val">"color:red"</span><span class="tg">&gt;</span>-0.8%<span class="tg">&lt;/td&gt;</span>
+      <span class="tg">&lt;td&gt;</span>$374B<span class="tg">&lt;/td&gt;</span>
+    <span class="tg">&lt;/tr&gt;</span>
+  <span class="tg">&lt;/tbody&gt;</span>
+
+  <span class="cmt">&lt;!-- tfoot: summary/total row(s) --&gt;</span>
+  <span class="tg">&lt;tfoot&gt;</span>
+    <span class="tg">&lt;tr&gt;</span>
+      <span class="tg">&lt;td</span> <span class="at">colspan</span>=<span class="val">"4"</span><span class="tg">&gt;</span>Data source: CoinGecko API<span class="tg">&lt;/td&gt;</span>
+    <span class="tg">&lt;/tr&gt;</span>
+  <span class="tg">&lt;/tfoot&gt;</span>
+<span class="tg">&lt;/table&gt;</span></div>
+
+    <div style="margin-top:1.5rem">
+      <p style="color:var(--txt2);margin-bottom:1rem"><strong style="color:var(--txt)">Rendered result:</strong></p>
+      <div class="demo">
+        <table class="tbl-demo" style="width:100%">
+          <caption style="font-weight:700;margin-bottom:.5rem;text-align:left">Top 3 Crypto Prices — 9 May 2025</caption>
+          <thead><tr><th>Coin</th><th>Price (USD)</th><th>24h Change</th><th>Market Cap</th></tr></thead>
+          <tbody>
+            <tr><th scope="row" style="font-weight:600;color:#333">Bitcoin (BTC)</th><td>$62,450</td><td style="color:green;font-weight:600">▲ +2.4%</td><td>$1.22T</td></tr>
+            <tr><th scope="row" style="font-weight:600;color:#333">Ethereum (ETH)</th><td>$3,120</td><td style="color:red;font-weight:600">▼ -0.8%</td><td>$374B</td></tr>
+            <tr><th scope="row" style="font-weight:600;color:#333">BNB</th><td>$412</td><td style="color:green;font-weight:600">▲ +1.1%</td><td>$63B</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="4" style="font-size:.85rem;color:#888;padding-top:.5rem">Data source: CoinGecko API</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLSPAN ROWSPAN -->
+  <div class="card">
+    <h3 class="ctitle"><span>↔️</span> colspan & rowspan — Merging Cells</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">colspan merges horizontally across columns. rowspan merges vertically across rows. These are how spreadsheet-style merged cells work.</p>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- colspan="2" = this cell takes up 2 columns --&gt;</span>
+<span class="tg">&lt;tr&gt;</span>
+  <span class="tg">&lt;th</span> <span class="at">colspan</span>=<span class="val">"2"</span><span class="tg">&gt;</span>Full Name<span class="tg">&lt;/th&gt;</span> <span class="cmt">&lt;!-- covers "First" and "Last" columns --&gt;</span>
+  <span class="tg">&lt;th&gt;</span>Score<span class="tg">&lt;/th&gt;</span>
+<span class="tg">&lt;/tr&gt;</span>
+<span class="tg">&lt;tr&gt;</span>
+  <span class="tg">&lt;td&gt;</span>John<span class="tg">&lt;/td&gt;</span>
+  <span class="tg">&lt;td&gt;</span>Doe<span class="tg">&lt;/td&gt;</span>
+  <span class="cmt">&lt;!-- rowspan="2" = this cell takes up 2 rows --&gt;</span>
+  <span class="tg">&lt;td</span> <span class="at">rowspan</span>=<span class="val">"2"</span><span class="tg">&gt;</span>95<span class="tg">&lt;/td&gt;</span>
+<span class="tg">&lt;/tr&gt;</span>
+<span class="tg">&lt;tr&gt;</span>
+  <span class="tg">&lt;td&gt;</span>Jane<span class="tg">&lt;/td&gt;</span>
+  <span class="tg">&lt;td&gt;</span>Smith<span class="tg">&lt;/td&gt;</span>
+  <span class="cmt">&lt;!-- no 3rd td here — rowspan above covers it --&gt;</span>
+<span class="tg">&lt;/tr&gt;</span></div>
+
+    <div style="margin-top:1.25rem">
+      <p style="color:var(--txt2);margin-bottom:1rem"><strong style="color:var(--txt)">Rendered result:</strong></p>
+      <div class="demo">
+        <table class="span-demo" style="width:100%">
+          <thead>
+            <tr>
+              <th colspan="2">Full Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>John</td><td>Doe</td>
+              <td rowspan="2" class="sp-highlight" style="background:#e8eaf6;vertical-align:middle">95 (shared)</td>
+            </tr>
+            <tr>
+              <td>Jane</td><td>Smith</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLEX TABLE -->
+  <div class="card">
+    <h3 class="ctitle"><span>📅</span> Complex Table — Class Schedule Example</h3>
+    <div class="demo">
+      <table class="tbl-demo" style="width:100%">
+        <caption style="font-weight:700;text-align:left;margin-bottom:.75rem">Weekly Class Schedule</caption>
+        <thead>
+          <tr>
+            <th>Time</th><th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" style="font-weight:600;background:#f0f4ff;color:#333">9:00 AM</th>
+            <td colspan="2" style="background:#e8f5e9;text-align:center;font-weight:600">HTML / CSS Fundamentals</td>
+            <td style="background:#fff3e0;text-align:center">JavaScript</td>
+            <td colspan="2" style="background:#e8f5e9;text-align:center;font-weight:600">HTML / CSS Fundamentals</td>
+          </tr>
+          <tr>
+            <th scope="row" style="font-weight:600;background:#f0f4ff;color:#333">11:00 AM</th>
+            <td style="background:#e3f2fd;text-align:center">MongoDB</td>
+            <td rowspan="2" style="background:#fce4ec;text-align:center;vertical-align:middle;font-weight:600">Weekend Project</td>
+            <td style="background:#fff3e0;text-align:center">Node.js</td>
+            <td style="background:#e3f2fd;text-align:center">MongoDB</td>
+            <td style="background:#fff3e0;text-align:center">Node.js</td>
+          </tr>
+          <tr>
+            <th scope="row" style="font-weight:600;background:#f0f4ff;color:#333">2:00 PM</th>
+            <td style="background:#f3e5f5;text-align:center">React</td>
+            <td style="background:#fff3e0;text-align:center">Q&amp;A Session</td>
+            <td style="background:#f3e5f5;text-align:center">React</td>
+            <td style="background:#e8f5e9;text-align:center">Code Review</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--txt3);font-size:.88rem;margin-top:.75rem">👆 This schedule uses colspan (Monday spanning 2 rows for "Weekend Project") and demonstrates real-world table use.</p>
+  </div>
+
+  <!-- SORTABLE TABLE SIM -->
+  <div class="card">
+    <h3 class="ctitle"><span>🔢</span> Interactive Sortable Table</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">Click any column header to sort. This is how tables work on GitHub, Binance, and every dashboard you've used.</p>
+    <div class="demo">
+      <table id="sortTable" class="tbl-demo" style="width:100%">
+        <thead>
+          <tr>
+            <th onclick="sortTbl(0)" style="cursor:pointer">Name ⇅</th>
+            <th onclick="sortTbl(1)" style="cursor:pointer">Language ⇅</th>
+            <th onclick="sortTbl(2)" style="cursor:pointer">Stars ⇅</th>
+            <th onclick="sortTbl(3)" style="cursor:pointer">Forks ⇅</th>
+          </tr>
+        </thead>
+        <tbody id="sortBody">
+          <tr><td>React</td><td>JavaScript</td><td>218000</td><td>44800</td></tr>
+          <tr><td>Vue</td><td>JavaScript</td><td>206000</td><td>33600</td></tr>
+          <tr><td>Django</td><td>Python</td><td>77000</td><td>30500</td></tr>
+          <tr><td>Laravel</td><td>PHP</td><td>75000</td><td>24200</td></tr>
+          <tr><td>Spring Boot</td><td>Java</td><td>71000</td><td>41000</td></tr>
+          <tr><td>Express</td><td>JavaScript</td><td>62000</td><td>12700</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: GitHub Repository Table</div>
+    <p style="color:var(--txt2)">GitHub's repository list, Binance order book, Google Analytics reports — all HTML tables. GitHub uses <code style="color:var(--green)">scope="col"</code> on &lt;th&gt; elements for accessibility so screen readers announce column context. The sortable columns use JavaScript to re-order &lt;tr&gt; elements inside &lt;tbody&gt; without reloading. The "sticky header" effect (column names stay visible while scrolling a long table) is done with CSS <code style="color:var(--green)">position: sticky; top: 0</code> on &lt;thead&gt;. The alternating row colours (zebra striping) come from CSS <code style="color:var(--green)">tr:nth-child(even)</code>.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: Should tables be used for page layout?</strong><br>Absolutely not. Tables for layout was 1990s practice. Problems: inaccessible (screen readers read cell by cell), terrible on mobile (no responsiveness), poor SEO, impossible to maintain. Use CSS Grid for 2D layout, Flexbox for 1D. Tables = data only.</li>
+      <li><strong>Q: Difference between &lt;th&gt; and &lt;td&gt;?</strong><br>&lt;th&gt; is a table header cell — bold and centred by default, but more importantly it's announced as a header by screen readers. &lt;td&gt; is a data cell. Use scope="col" or scope="row" on &lt;th&gt; to tell screen readers the header's direction.</li>
+      <li><strong>Q: Purpose of &lt;thead&gt;, &lt;tbody&gt;, &lt;tfoot&gt;?</strong><br>Semantic grouping. &lt;thead&gt; and &lt;tfoot&gt; repeat when printing long tables across pages. Browser can scroll &lt;tbody&gt; independently (overflow: scroll on tbody) while keeping headers/footers fixed. Also helps assistive tech and CSS targeting (tbody tr:hover).</li>
+      <li><strong>Q: What is the scope attribute on &lt;th&gt;?</strong><br>Tells assistive tech whether the header applies to a column (scope="col") or a row (scope="row"). Critical for complex tables with both row and column headers. Without scope, screen reader users can't tell which header applies to which data.</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<script>
+// TAB SWITCHING
+const progWidths = {
+  'html-structure': '25%', 'text-formatting': '50%',
+  'forms': '75%', 'tables': '100%'
+};
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  document.getElementById('prog').style.width = progWidths[id] || '25%';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// LIVE EDITOR
+function updatePreview() {
+  const html = document.getElementById('liveEditor').value;
+  document.getElementById('livePreview').innerHTML = html;
+}
+updatePreview();
+
+// DOM INFO
+const domData = {
+  html: {label:'&lt;html lang="en"&gt;', info:'Root element. lang="en" helps search engines and screen readers identify the page language. Every other element is a descendant of this.'},
+  head: {label:'&lt;head&gt;', info:'Container for metadata. Nothing inside is visible on page. Contains title, meta tags, CSS links, JS tags. Browser reads this first.'},
+  title: {label:'&lt;title&gt;', info:'Shows in browser tab. Also the blue clickable link in Google search results. Critical for SEO. Keep under 60 characters.'},
+  txt: {label:'Text Node: "My Website"', info:'Text nodes are children of element nodes. Even whitespace between tags is a text node. JavaScript\'s .textContent accesses these.'},
+  meta: {label:'&lt;meta charset="UTF-8"&gt;', info:'Void element (no closing tag). charset="UTF-8" supports all languages including Bengali (বাংলা), Arabic, Chinese etc. Always first in &lt;head&gt;.'},
+  body: {label:'&lt;body&gt;', info:'Contains ALL visible content. Only one per page. JavaScript\'s document.body references this. Event listeners often attach here.'},
+  h1: {label:'&lt;h1 id="main"&gt;', info:'Main page heading. One per page. The id="main" lets JS target it: document.getElementById("main"). Also used for skip-to-main-content links.'},
+  h1txt: {label:'Text Node: "Hello World"', info:'The actual text content. JS: document.getElementById("main").textContent = "New Title" changes this text node dynamically.'},
+  p: {label:'&lt;p class="intro"&gt;', info:'Block element. class="intro" lets CSS target it: .intro { color: blue }. JS: document.querySelector(".intro") selects it.'},
+  ptxt: {label:'Text Node: "First paragraph…"', info:'Using .innerHTML you can change this to include HTML tags. Using .textContent is safer (prevents XSS attacks).'},
+  div: {label:'&lt;div class="container"&gt;', info:'Generic block container. No semantic meaning. Children can be queried: div.querySelectorAll("img") gets all images inside.'},
+  img: {label:'&lt;img src="photo.jpg" alt="…"&gt;', info:'Void element — no closing tag. Attributes: src (URL), alt (text fallback + SEO), width/height (prevents layout shift). JS: img.src = "new.jpg" swaps the image.'}
+};
+function showDomInfo(key) {
+  const box = document.getElementById('domInfo');
+  const d = domData[key];
+  if (!d) return;
+  box.innerHTML = `<strong style="color:var(--cyan)">${d.label}</strong><br><span style="color:var(--txt2);margin-top:.4rem;display:block">${d.info}</span>`;
+  box.style.display = 'block';
+}
+
+// PASSWORD CHECK
+function checkPwd(el) {
+  const msg = document.getElementById('pwdMsg');
+  if (el.value.length === 0) { msg.textContent = ''; return; }
+  if (el.value.length < 8) {
+    msg.className = 'validation-msg val-err';
+    msg.textContent = '✗ Too short — need ' + (8 - el.value.length) + ' more characters';
+  } else {
+    msg.className = 'validation-msg val-ok';
+    msg.textContent = '✓ Good length!';
+  }
+}
+
+// FORM SUBMIT
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const res = document.getElementById('formResult');
+  res.style.display = 'block';
+  res.textContent = '✅ Form submitted successfully! In a real app this data would be sent to the server via fetch/POST.';
+  setTimeout(() => res.style.display = 'none', 4000);
+}
+
+// SORTABLE TABLE
+let sortDir = {};
+function sortTbl(col) {
+  const tbody = document.getElementById('sortBody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const dir = (sortDir[col] === 'asc') ? 'desc' : 'asc';
+  sortDir[col] = dir;
+  rows.sort((a, b) => {
+    const av = a.cells[col].textContent.trim();
+    const bv = b.cells[col].textContent.trim();
+    const an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return dir === 'asc' ? an - bn : bn - an;
+    return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+</body>
+</html>
