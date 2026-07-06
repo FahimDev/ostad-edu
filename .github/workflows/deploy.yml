@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      APP_DIR: /home/azureuser/apps/ostad-edu/mern/backend/open-api
+      APP_DIR: /home/azureuser/apps/ostad-edu/mern/backend/open-api-express
 
     steps:
       - name: Checkout latest code
