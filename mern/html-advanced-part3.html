@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Advanced — Part 3: Multimedia, Semantic & Interactive</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e27;--bg2:#131740;--bg3:#1a1f4d;
+  --green:#00ff88;--cyan:#00d9ff;--pink:#ff00ff;
+  --txt:#ffffff;--txt2:#a0aec0;--txt3:#718096;
+  --border:rgba(0,255,136,0.2);--code:#0d1117;
+  --warn:#fbbf24;--danger:#ef4444;--ok:#10b981;
+}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden}
+.bg-glow{position:fixed;inset:0;z-index:-1;opacity:.05;
+  background:radial-gradient(circle at 70% 30%,var(--pink) 0%,transparent 50%),
+             radial-gradient(circle at 30% 70%,var(--cyan) 0%,transparent 50%),
+             radial-gradient(circle at 50% 50%,var(--green) 0%,transparent 40%);
+  animation:bgp 14s ease-in-out infinite}
+@keyframes bgp{0%,100%{opacity:.05}50%{opacity:.09}}
+.hdr{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:2.5rem 2rem;text-align:center;border-bottom:2px solid var(--border);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:linear-gradient(45deg,transparent,rgba(0,217,255,.07),transparent);animation:shine 8s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(200%) rotate(45deg)}}
+.hdr-badge{display:inline-block;background:linear-gradient(135deg,var(--pink),var(--cyan));color:var(--bg);font-size:.8rem;font-weight:700;padding:.3rem 1rem;border-radius:20px;margin-bottom:1rem;letter-spacing:1px;position:relative;z-index:1}
+.hdr h1{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+.hdr p{color:var(--txt2);font-size:1rem;position:relative;z-index:1;margin-top:.5rem}
+.hdr-nav{display:flex;justify-content:center;gap:1rem;margin-top:1.25rem;position:relative;z-index:1;flex-wrap:wrap}
+.hdr-nav a{color:var(--txt2);text-decoration:none;font-size:.9rem;border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;transition:all .25s}
+.hdr-nav a:hover{color:var(--cyan);border-color:var(--cyan)}
+.nav-wrap{position:sticky;top:0;background:rgba(10,14,39,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;padding:0 1.5rem}
+.nav-tabs{display:flex;gap:.4rem;overflow-x:auto;padding:.7rem 0;scrollbar-width:thin;scrollbar-color:var(--cyan) var(--bg2)}
+.nav-tabs::-webkit-scrollbar{height:3px}
+.nav-tabs::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:3px}
+.tab{background:transparent;color:var(--txt2);border:1px solid var(--border);padding:.6rem 1.3rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;white-space:nowrap;transition:all .25s;font-family:'Manrope',sans-serif;overflow:hidden;position:relative}
+.tab:hover{border-color:var(--cyan);color:var(--txt);transform:translateY(-2px)}
+.tab.on{background:linear-gradient(135deg,var(--cyan),var(--pink));color:var(--bg);font-weight:700;border-color:transparent}
+.prog-bar{height:3px;background:rgba(0,217,255,.1)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));transition:width .3s}
+.wrap{max-width:1300px;margin:0 auto;padding:2.5rem 1.5rem}
+.sec{display:none;animation:fadeUp .4s ease-out}
+.sec.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+.ssub{font-size:1rem;color:var(--txt2);margin-bottom:2rem;line-height:1.6}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:2rem;transition:all .3s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--green));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.card:hover::before{transform:scaleX(1)}
+.card:hover{border-color:rgba(0,217,255,.5);box-shadow:0 12px 40px rgba(0,217,255,.12)}
+.ctitle{font-family:'Space Grotesk',sans-serif;font-size:1.55rem;font-weight:600;color:var(--cyan);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.code{background:var(--code);border:1px solid rgba(0,217,255,.2);border-radius:10px;padding:1.5rem;margin:1.25rem 0;font-family:'Fira Code',monospace;font-size:.875rem;line-height:1.7;overflow-x:auto;position:relative;white-space:pre}
+.code::before{content:attr(data-lang);position:absolute;top:.4rem;right:.75rem;font-size:.68rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;font-family:'Manrope',sans-serif}
+.kw{color:#ff79c6}.str{color:#00ff88}.cmt{color:#6272a4;font-style:italic}.fn{color:#00d9ff}.num{color:#fbbf24}.tg{color:#ff6e6e}.at{color:#8be9fd}.val{color:#f1fa8c}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.1rem;margin:1.5rem 0}
+.kbox{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem;transition:all .25s}
+.kbox:hover{border-color:var(--pink);transform:scale(1.02)}
+.kbox h4{color:var(--pink);margin-bottom:.4rem;font-size:1rem;font-weight:600}
+.kbox p{color:var(--txt2);font-size:.9rem}
+.rw{background:linear-gradient(135deg,rgba(0,217,255,.07),rgba(255,0,255,.07));border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:1.5rem;margin:1.75rem 0}
+.rw-t{font-weight:600;color:var(--cyan);margin-bottom:.6rem;font-size:1rem;display:flex;align-items:center;gap:.4rem}
+.tips{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(239,68,68,.07));border-left:4px solid var(--warn);border-radius:0 10px 10px 0;padding:1.5rem;margin:1.75rem 0}
+.tips-t{font-weight:600;color:var(--warn);margin-bottom:.75rem;font-size:1rem}
+.tips ul{margin-left:1.25rem}
+.tips li{margin-bottom:.75rem;color:var(--txt2);line-height:1.65}
+.tips li strong{color:var(--txt)}
+.warn-box{background:rgba(239,68,68,.08);border-left:4px solid var(--danger);border-radius:0 10px 10px 0;padding:1.25rem;margin:1.25rem 0}
+.warn-box strong{color:var(--danger)}
+.ok-box{background:rgba(16,185,129,.08);border-left:4px solid var(--ok);border-radius:0 10px 10px 0;padding:1.25rem;margin:1.25rem 0}
+.ok-box strong{color:var(--ok)}
+.demo{background:#fff;color:#222;border-radius:12px;padding:1.75rem;margin:1.25rem 0;border:2px solid var(--cyan)}
+.tbl{width:100%;border-collapse:collapse;margin:1.25rem 0;border-radius:12px;overflow:hidden}
+.tbl thead{background:linear-gradient(135deg,#0097a7,#00bcd4);color:#fff}
+.tbl th,.tbl td{padding:.85rem 1rem;text-align:left;font-size:.92rem}
+.tbl td{color:var(--txt2);border-bottom:1px solid var(--border)}
+.tbl tbody tr:hover{background:var(--bg3)}
+.tbl code{background:rgba(0,217,255,.12);color:var(--cyan);padding:.15rem .45rem;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem}
+.btn{background:linear-gradient(135deg,var(--cyan),var(--pink));color:var(--bg);border:none;padding:.65rem 1.4rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;transition:all .25s;margin:.35rem;font-family:'Manrope',sans-serif}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,217,255,.35)}
+.b{display:inline-block;padding:.18rem .6rem;border-radius:20px;font-size:.78rem;font-weight:700}
+.b-ok{background:var(--ok);color:#fff}
+.b-no{background:var(--danger);color:#fff}
+.b-warn{background:var(--warn);color:#000}
+.b-info{background:var(--cyan);color:var(--bg)}
+
+/* SEMANTIC LAYOUT VIS */
+.page-layout{display:grid;grid-template-areas:"hdr hdr" "nav nav" "main aside" "ftr ftr";grid-template-columns:1fr 280px;grid-template-rows:auto auto 1fr auto;gap:.6rem;margin:1.5rem 0;font-family:'Fira Code',monospace;font-size:.85rem}
+.pl-hdr{grid-area:hdr;background:rgba(255,121,198,.2);border:2px solid rgba(255,121,198,.5);color:#ff79c6;padding:1rem;border-radius:8px;text-align:center}
+.pl-nav{grid-area:nav;background:rgba(0,217,255,.2);border:2px solid rgba(0,217,255,.5);color:#00d9ff;padding:.75rem;border-radius:8px;text-align:center}
+.pl-main{grid-area:main;background:rgba(0,255,136,.12);border:2px solid rgba(0,255,136,.4);color:#00ff88;padding:1rem;border-radius:8px;min-height:180px}
+.pl-aside{grid-area:aside;background:rgba(241,250,140,.12);border:2px solid rgba(241,250,140,.35);color:#f1fa8c;padding:1rem;border-radius:8px}
+.pl-ftr{grid-area:ftr;background:rgba(189,147,249,.2);border:2px solid rgba(189,147,249,.5);color:#bd93f9;padding:.75rem;border-radius:8px;text-align:center}
+.pl-article{background:rgba(0,255,136,.08);border:1px dashed rgba(0,255,136,.3);border-radius:6px;padding:.75rem;margin:.5rem 0;font-size:.8rem;color:#00ff88}
+.pl-section{background:rgba(0,255,136,.05);border:1px dashed rgba(0,255,136,.2);border-radius:4px;padding:.5rem;margin:.4rem 0;font-size:.78rem;color:rgba(0,255,136,.7)}
+
+/* DETAILS/SUMMARY DEMO */
+.faq-item{border:1px solid #ddd;border-radius:8px;margin-bottom:.75rem;overflow:hidden}
+.faq-item summary{padding:1rem;cursor:pointer;font-weight:600;background:#f8f9fa;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.faq-item summary::after{content:'+';font-size:1.4rem;color:#667eea}
+.faq-item[open] summary::after{content:'−';color:#ef4444}
+.faq-item summary:hover{background:#eef2ff}
+.faq-item p{padding:1rem;color:#555;line-height:1.6}
+
+/* DIALOG DEMO */
+.dialog-demo{border:none;border-radius:16px;padding:0;box-shadow:0 25px 60px rgba(0,0,0,.4);max-width:420px;width:90%}
+.dialog-demo::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+.dialog-inner{padding:2rem}
+.dialog-inner h3{color:#1a1a1a;margin-bottom:1rem;font-size:1.3rem}
+.dialog-inner p{color:#555;margin-bottom:1.5rem}
+.dialog-btns{display:flex;gap:.75rem;justify-content:flex-end}
+.d-btn-cancel{background:#f1f3f4;color:#555;border:none;padding:.65rem 1.25rem;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Manrope',sans-serif;font-size:.9rem}
+.d-btn-confirm{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:.65rem 1.25rem;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Manrope',sans-serif;font-size:.9rem}
+
+/* PROGRESS DEMO */
+.progress-demo{margin:1rem 0}
+.progress-demo label{display:block;margin-bottom:.4rem;font-weight:600;color:#555;font-size:.9rem}
+.progress-demo progress{width:100%;height:24px;border-radius:8px;margin-bottom:1rem}
+
+/* CANVAS */
+#demoCanvas{border:2px solid var(--cyan);border-radius:8px;background:#1a1a2e;cursor:crosshair;display:block}
+
+/* IMAGE FORMATS */
+.img-formats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.img-fmt{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center}
+.img-fmt .fmt-name{font-family:'Fira Code',monospace;font-size:1.3rem;font-weight:700;margin-bottom:.4rem}
+.fmt-webp{color:#00ff88}.fmt-avif{color:#00d9ff}.fmt-jpg{color:#fbbf24}.fmt-png{color:#ff79c6}.fmt-svg{color:#bd93f9}.fmt-gif{color:#ff6e6e}
+.img-fmt p{font-size:.85rem;color:var(--txt2);line-height:1.5;margin-top:.4rem}
+
+/* ACCESSIBILITY SCORE */
+.a11y-score{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.5rem 0}
+.a11y-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;transition:all .25s}
+.a11y-card:hover{transform:translateY(-4px)}
+.a11y-num{font-size:2.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;margin-bottom:.3rem}
+.a11y-label{font-size:.85rem;color:var(--txt2)}
+.score-good{color:var(--ok)}.score-warn{color:var(--warn)}.score-bad{color:var(--danger)}
+
+@media(max-width:768px){
+  .hdr h1{font-size:1.9rem}
+  .stitle{font-size:1.75rem}
+  .page-layout{grid-template-areas:"hdr" "nav" "main" "aside" "ftr";grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header class="hdr">
+  <div class="hdr-badge">PART 3 OF 3</div>
+  <h1>🎬 HTML Advanced</h1>
+  <p>Multimedia · Semantic HTML · Interactive Elements — complete with live demos</p>
+  <div class="hdr-nav">
+    <a href="web-essentials-part1.html">← Part 1: Web Essentials</a>
+    <a href="html-fundamentals-part2.html">← Part 2: Structure, Forms & Tables</a>
+  </div>
+</header>
+
+<nav class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="tab on"  onclick="show('multimedia',this)">🎬 Multimedia</button>
+    <button class="tab"     onclick="show('semantic',this)">🏛️ Semantic HTML</button>
+    <button class="tab"     onclick="show('interactive',this)">🎛️ Interactive Elements</button>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog" style="width:33%"></div></div>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 1 — MULTIMEDIA                        -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="multimedia" class="sec on">
+  <h2 class="stitle">Multimedia — Images, Audio & Video</h2>
+  <p class="ssub">Media elements are everywhere on the web. Knowing the right attributes and formats is what separates fast, accessible sites from slow broken ones.</p>
+
+  <!-- IMAGES -->
+  <div class="card">
+    <h3 class="ctitle"><span>🖼️</span> The &lt;img&gt; Element — Every Attribute Matters</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- ── BASIC IMAGE ── --&gt;</span>
+<span class="tg">&lt;img</span> <span class="at">src</span>=<span class="val">"photo.jpg"</span>
+     <span class="at">alt</span>=<span class="val">"A developer typing code on a laptop"</span>
+     <span class="at">width</span>=<span class="val">"800"</span>
+     <span class="at">height</span>=<span class="val">"450"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- ── RESPONSIVE IMAGE — different sizes for different screens ── --&gt;</span>
+<span class="tg">&lt;img</span> <span class="at">src</span>=<span class="val">"photo-800.jpg"</span>
+     <span class="at">srcset</span>=<span class="val">"photo-400.jpg 400w,
+             photo-800.jpg 800w,
+             photo-1600.jpg 1600w"</span>
+     <span class="at">sizes</span>=<span class="val">"(max-width: 600px) 400px,
+            (max-width: 1200px) 800px,
+            1600px"</span>
+     <span class="at">alt</span>=<span class="val">"Responsive photo"</span>
+     <span class="at">loading</span>=<span class="val">"lazy"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- ── PICTURE — art direction + format fallback ── --&gt;</span>
+<span class="tg">&lt;picture&gt;</span>
+  <span class="cmt">&lt;!-- AVIF: smallest file, newest browsers --&gt;</span>
+  <span class="tg">&lt;source</span> <span class="at">srcset</span>=<span class="val">"photo.avif"</span> <span class="at">type</span>=<span class="val">"image/avif"</span><span class="tg">&gt;</span>
+  <span class="cmt">&lt;!-- WebP: ~30% smaller than JPEG, wide support --&gt;</span>
+  <span class="tg">&lt;source</span> <span class="at">srcset</span>=<span class="val">"photo.webp"</span> <span class="at">type</span>=<span class="val">"image/webp"</span><span class="tg">&gt;</span>
+  <span class="cmt">&lt;!-- JPEG fallback for old browsers --&gt;</span>
+  <span class="tg">&lt;img</span> <span class="at">src</span>=<span class="val">"photo.jpg"</span> <span class="at">alt</span>=<span class="val">"My photo"</span> <span class="at">loading</span>=<span class="val">"lazy"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/picture&gt;</span>
+
+<span class="cmt">&lt;!-- ── FIGURE + FIGCAPTION — semantically connected image+caption ── --&gt;</span>
+<span class="tg">&lt;figure&gt;</span>
+  <span class="tg">&lt;img</span> <span class="at">src</span>=<span class="val">"chart.png"</span> <span class="at">alt</span>=<span class="val">"Q4 2024 revenue growth chart"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;figcaption&gt;</span>Figure 1: Revenue grew 40% in Q4 2024<span class="tg">&lt;/figcaption&gt;</span>
+<span class="tg">&lt;/figure&gt;</span></div>
+
+    <div class="grid">
+      <div class="kbox"><h4>alt attribute</h4><p>Screen readers read it aloud. Shows if image fails. Helps SEO. Empty alt="" for purely decorative images (icons used as bullets etc).</p></div>
+      <div class="kbox"><h4>width + height</h4><p>Always set both! Browser reserves space before image loads. Without them you get Cumulative Layout Shift (CLS) — content jumping around = bad UX + bad Core Web Vitals score.</p></div>
+      <div class="kbox"><h4>loading="lazy"</h4><p>Native browser lazy loading. Images below the fold load only when they're about to scroll into view. Zero JS required. Use on all images except above-the-fold hero images.</p></div>
+      <div class="kbox"><h4>srcset + sizes</h4><p>Browser downloads the most appropriate image for screen size and DPI. Mobile gets 400px file, desktop gets 1600px. Massive bandwidth savings on mobile.</p></div>
+    </div>
+  </div>
+
+  <!-- IMAGE FORMATS -->
+  <div class="card">
+    <h3 class="ctitle"><span>🗂️</span> Image Formats — Choosing the Right One</h3>
+    <div class="img-formats">
+      <div class="img-fmt"><div class="fmt-name fmt-avif">.avif</div><strong>Best for:</strong> Photos, illustrations<br><p>Newest format. 50% smaller than JPEG. Chrome, Firefox support. Use with &lt;picture&gt; fallback.</p></div>
+      <div class="img-fmt"><div class="fmt-name fmt-webp">.webp</div><strong>Best for:</strong> Photos + transparency<br><p>Google's format. ~30% smaller than JPEG. Supports transparency unlike JPEG. 95%+ browser support. Use today.</p></div>
+      <div class="img-fmt"><div class="fmt-name fmt-jpg">.jpg / .jpeg</div><strong>Best for:</strong> Photos<br><p>Universal support. No transparency. Lossy compression. Still useful as &lt;picture&gt; fallback for old browsers.</p></div>
+      <div class="img-fmt"><div class="fmt-name fmt-png">.png</div><strong>Best for:</strong> Transparency needed<br><p>Lossless compression. Supports transparency (alpha channel). Good for logos with transparent bg. Larger than WebP.</p></div>
+      <div class="img-fmt"><div class="fmt-name fmt-svg">.svg</div><strong>Best for:</strong> Icons, logos, charts<br><p>Vector — infinitely scalable, no blur at any size. Code-based (XML). Can be styled with CSS. Inline &lt;svg&gt; lets JS animate it.</p></div>
+      <div class="img-fmt"><div class="fmt-name fmt-gif">.gif</div><strong>Best for:</strong> Simple animations<br><p>Only 256 colours, huge file size. Use CSS animations or &lt;video autoplay loop muted&gt; instead for better performance.</p></div>
+    </div>
+  </div>
+
+  <!-- SVG + CANVAS -->
+  <div class="card">
+    <h3 class="ctitle"><span>🎨</span> SVG vs Canvas — Live Examples</h3>
+    <p style="color:var(--txt2);margin-bottom:1.5rem">Two completely different approaches to drawing in the browser.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div>
+        <h4 style="color:var(--green);margin-bottom:.75rem">SVG — Vector (DOM-based)</h4>
+        <div class="code" data-lang="HTML"><span class="tg">&lt;svg</span> <span class="at">viewBox</span>=<span class="val">"0 0 200 120"</span> <span class="at">xmlns</span>=<span class="val">"http://www.w3.org/2000/svg"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;circle</span> <span class="at">cx</span>=<span class="val">"60"</span> <span class="at">cy</span>=<span class="val">"60"</span> <span class="at">r</span>=<span class="val">"50"</span> <span class="at">fill</span>=<span class="val">"#00ff88"</span><span class="tg">/&gt;</span>
+  <span class="tg">&lt;rect</span> <span class="at">x</span>=<span class="val">"110"</span> <span class="at">y</span>=<span class="val">"10"</span> <span class="at">width</span>=<span class="val">"80"</span> <span class="at">height</span>=<span class="val">"100"</span> <span class="at">fill</span>=<span class="val">"#00d9ff"</span> <span class="at">rx</span>=<span class="val">"8"</span><span class="tg">/&gt;</span>
+  <span class="tg">&lt;text</span> <span class="at">x</span>=<span class="val">"60"</span> <span class="at">y</span>=<span class="val">"65"</span> <span class="at">text-anchor</span>=<span class="val">"middle"</span> <span class="at">fill</span>=<span class="val">"#000"</span> <span class="at">font-weight</span>=<span class="val">"bold"</span><span class="tg">&gt;</span>SVG<span class="tg">&lt;/text&gt;</span>
+<span class="tg">&lt;/svg&gt;</span></div>
+        <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg3);margin-top:.5rem">
+          <circle cx="60" cy="60" r="50" fill="#00ff88" opacity=".8"/>
+          <rect x="110" y="10" width="80" height="100" fill="#00d9ff" rx="8" opacity=".8"/>
+          <text x="60" y="65" text-anchor="middle" fill="#000" font-weight="bold" font-size="14">SVG</text>
+          <text x="150" y="65" text-anchor="middle" fill="#000" font-weight="bold" font-size="14">SVG</text>
+        </svg>
+        <p style="color:var(--txt3);font-size:.82rem;margin-top:.5rem">✅ Scalable, CSS-styleable, accessible, click events on each shape</p>
+      </div>
+      <div>
+        <h4 style="color:var(--cyan);margin-bottom:.75rem">Canvas — Pixel (JS-based)</h4>
+        <div class="code" data-lang="HTML"><span class="tg">&lt;canvas</span> <span class="at">id</span>=<span class="val">"c"</span> <span class="at">width</span>=<span class="val">"200"</span> <span class="at">height</span>=<span class="val">"120"</span><span class="tg">&gt;&lt;/canvas&gt;</span>
+<span class="tg">&lt;script&gt;</span>
+<span class="kw">const</span> ctx = document.getElementById(<span class="str">'c'</span>).getContext(<span class="str">'2d'</span>);
+ctx.fillStyle = <span class="str">'#ff79c6'</span>;
+ctx.fillRect(<span class="num">10</span>, <span class="num">10</span>, <span class="num">80</span>, <span class="num">100</span>);
+ctx.fillStyle = <span class="str">'#fbbf24'</span>;
+ctx.arc(<span class="num">150</span>, <span class="num">60</span>, <span class="num">45</span>, <span class="num">0</span>, Math.PI * <span class="num">2</span>);
+ctx.fill();
+<span class="tg">&lt;/script&gt;</span></div>
+        <canvas id="demoCanvas" width="200" height="120" style="width:100%;border-radius:8px;margin-top:.5rem"></canvas>
+        <p style="color:var(--txt3);font-size:.82rem;margin-top:.5rem">✅ Best for games, image editing, complex animations, pixel manipulation</p>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem">
+      <h4 style="color:var(--txt);margin-bottom:.75rem">Draw on the canvas below:</h4>
+      <canvas id="drawCanvas" width="640" height="200" style="width:100%;border:2px solid var(--cyan);border-radius:8px;background:#1a1a2e;cursor:crosshair;display:block"></canvas>
+      <div style="margin-top:.75rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <button class="btn" onclick="clearCanvas()">🗑 Clear</button>
+        <label style="color:var(--txt2);font-size:.9rem">Colour: <input type="color" id="drawColor" value="#00ff88" style="border:none;background:none;cursor:pointer;width:36px;height:36px;vertical-align:middle"></label>
+        <label style="color:var(--txt2);font-size:.9rem">Size: <input type="range" id="brushSize" min="2" max="30" value="8" style="width:80px;vertical-align:middle"></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="card">
+    <h3 class="ctitle"><span>🎬</span> Video Element</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- ── SELF-HOSTED VIDEO ── --&gt;</span>
+<span class="tg">&lt;video</span> <span class="at">width</span>=<span class="val">"640"</span> <span class="at">height</span>=<span class="val">"360"</span>
+       <span class="at">controls</span>
+       <span class="at">poster</span>=<span class="val">"thumbnail.jpg"</span>
+       <span class="at">preload</span>=<span class="val">"metadata"</span><span class="tg">&gt;</span>
+  <span class="cmt">&lt;!-- Browser picks first format it supports --&gt;</span>
+  <span class="tg">&lt;source</span> <span class="at">src</span>=<span class="val">"video.webm"</span> <span class="at">type</span>=<span class="val">"video/webm"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;source</span> <span class="at">src</span>=<span class="val">"video.mp4"</span>  <span class="at">type</span>=<span class="val">"video/mp4"</span><span class="tg">&gt;</span>
+  <span class="cmt">&lt;!-- Subtitles for accessibility --&gt;</span>
+  <span class="tg">&lt;track</span> <span class="at">kind</span>=<span class="val">"subtitles"</span> <span class="at">src</span>=<span class="val">"en.vtt"</span> <span class="at">srclang</span>=<span class="val">"en"</span> <span class="at">label</span>=<span class="val">"English"</span> <span class="at">default</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;track</span> <span class="at">kind</span>=<span class="val">"subtitles"</span> <span class="at">src</span>=<span class="val">"bn.vtt"</span> <span class="at">srclang</span>=<span class="val">"bn"</span> <span class="at">label</span>=<span class="val">"বাংলা"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;p&gt;</span>Your browser doesn't support HTML video.<span class="tg">&lt;/p&gt;</span>
+<span class="tg">&lt;/video&gt;</span>
+
+<span class="cmt">&lt;!-- ── BACKGROUND VIDEO (autoplay hero) ── --&gt;</span>
+<span class="tg">&lt;video</span> <span class="at">autoplay</span> <span class="at">loop</span> <span class="at">muted</span> <span class="at">playsinline</span> <span class="at">poster</span>=<span class="val">"hero-fallback.jpg"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;source</span> <span class="at">src</span>=<span class="val">"hero-bg.mp4"</span> <span class="at">type</span>=<span class="val">"video/mp4"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/video&gt;</span>
+
+<span class="cmt">&lt;!-- ── EMBEDDED YOUTUBE ── --&gt;</span>
+<span class="tg">&lt;iframe</span> <span class="at">width</span>=<span class="val">"560"</span> <span class="at">height</span>=<span class="val">"315"</span>
+        <span class="at">src</span>=<span class="val">"https://www.youtube.com/embed/VIDEO_ID?rel=0"</span>
+        <span class="at">title</span>=<span class="val">"Video description"</span>
+        <span class="at">frameborder</span>=<span class="val">"0"</span>
+        <span class="at">allow</span>=<span class="val">"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"</span>
+        <span class="at">allowfullscreen</span>
+        <span class="at">loading</span>=<span class="val">"lazy"</span><span class="tg">&gt;
+&lt;/iframe&gt;</span></div>
+
+    <table class="tbl">
+      <thead><tr><th>Attribute</th><th>Effect</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><code>controls</code></td><td>Shows browser's native play/pause/volume UI</td><td>Always add for user-controlled video</td></tr>
+        <tr><td><code>autoplay</code></td><td>Starts playing immediately</td><td>Blocked by most browsers unless muted is also present</td></tr>
+        <tr><td><code>muted</code></td><td>No audio by default</td><td>Required for autoplay to work in modern browsers</td></tr>
+        <tr><td><code>loop</code></td><td>Restarts when finished</td><td>Good for background/hero videos</td></tr>
+        <tr><td><code>poster</code></td><td>Thumbnail image shown before play</td><td>Always set for better perceived performance</td></tr>
+        <tr><td><code>preload</code></td><td>none / metadata / auto</td><td>metadata: only download duration/dimensions. Saves bandwidth.</td></tr>
+        <tr><td><code>playsinline</code></td><td>Plays inline on iOS (not fullscreen)</td><td>Essential for background videos on iPhone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: How Netflix Serves Video</div>
+    <p style="color:var(--txt2)">Netflix doesn't use a plain &lt;video&gt; tag. They use <strong style="color:var(--txt)">Adaptive Bitrate Streaming (ABR)</strong> via MPEG-DASH or HLS protocols. The video file is split into small 2–10 second chunks at multiple quality levels (480p, 720p, 1080p, 4K). The player constantly monitors your connection speed and switches quality mid-stream — that's why your video doesn't stop when your WiFi slows down. The &lt;video&gt; element's <code style="color:var(--cyan)">src</code> points to a manifest file (.mpd or .m3u8), not a single video file. DRM (Widevine, FairPlay) encrypts each chunk. The custom controls (skip intro, next episode, quality selector) are built with JavaScript over a basic &lt;video&gt; element with no controls attribute.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: Why is alt text important on images?</strong><br>Three reasons: (1) Accessibility — screen readers read it aloud to blind users. (2) SEO — Google indexes alt text to understand image content. (3) Fallback — displayed when image fails to load. Alt="" (empty) for decorative images tells screen readers to skip them.</li>
+      <li><strong>Q: What is loading="lazy" and why use it?</strong><br>Native browser lazy loading — images off-screen aren't downloaded until the user scrolls near them. Zero JavaScript needed. Reduces initial page load size dramatically. Don't use on above-the-fold images (hero images, logo) — use loading="eager" or omit the attribute.</li>
+      <li><strong>Q: Difference between SVG and Canvas?</strong><br>SVG: vector-based, DOM nodes (CSS-styleable, clickable, accessible), infinite scalability, re-draws on state change. Canvas: pixel/raster, JavaScript API only, better for 1000s of elements (games), no accessibility. Use SVG for charts/icons/UI elements, Canvas for games/photo editing/complex visualizations.</li>
+      <li><strong>Q: What does muted do on a video tag?</strong><br>Silences audio. Critical because browsers block autoplay video with sound (to prevent annoying ads). Autoplay + muted = works everywhere. Used for hero background videos (Apple.com, Airbnb landing pages) and animated product demos.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 2 — SEMANTIC HTML                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="semantic" class="sec">
+  <h2 class="stitle">Semantic HTML</h2>
+  <p class="ssub">Semantic elements describe their meaning. &lt;article&gt; means "this is self-contained content". &lt;nav&gt; means "these are navigation links". Without semantics, search engines guess — and often guess wrong.</p>
+
+  <!-- LAYOUT VIS -->
+  <div class="card">
+    <h3 class="ctitle"><span>🗺️</span> Semantic Page Layout</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">This is how a typical blog article page is structured semantically. Every coloured box is a different semantic element.</p>
+    <div class="page-layout">
+      <div class="pl-hdr">
+        &lt;header&gt; — site logo, branding
+        <div style="margin-top:.5rem;font-size:.78rem;opacity:.7">&lt;h1&gt; site name &lt;/h1&gt;</div>
+      </div>
+      <div class="pl-nav">&lt;nav&gt; — main navigation &nbsp;|&nbsp; Home · About · Blog · Contact · Login</div>
+      <div class="pl-main">
+        &lt;main&gt; — primary content (only ONE per page)
+        <div class="pl-article">
+          &lt;article&gt; — Blog Post (self-contained, shareable)
+          <div class="pl-section">&lt;section&gt; Introduction</div>
+          <div class="pl-section">&lt;section&gt; Main Content</div>
+          <div class="pl-section">&lt;section&gt; Conclusion</div>
+          <div style="font-size:.75rem;color:rgba(0,255,136,.5);margin-top:.4rem">&lt;footer&gt; — post metadata (tags, share buttons)</div>
+        </div>
+      </div>
+      <div class="pl-aside">
+        &lt;aside&gt; — sidebar
+        <div style="font-size:.8rem;margin-top:.5rem;opacity:.8">Author bio<br>Related articles<br>Newsletter signup<br>Ad placement</div>
+      </div>
+      <div class="pl-ftr">&lt;footer&gt; — copyright, links, social media icons</div>
+    </div>
+  </div>
+
+  <!-- FULL CODE -->
+  <div class="card">
+    <h3 class="ctitle"><span>📝</span> Complete Semantic Page Code</h3>
+    <div class="code" data-lang="HTML"><span class="tg">&lt;body&gt;</span>
+
+  <span class="tg">&lt;header&gt;</span>
+    <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"/"</span> <span class="at">class</span>=<span class="val">"logo"</span><span class="tg">&gt;</span>MySite<span class="tg">&lt;/a&gt;</span>
+    <span class="tg">&lt;nav</span> <span class="at">aria-label</span>=<span class="val">"Main navigation"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;ul&gt;</span>
+        <span class="tg">&lt;li&gt;&lt;a</span> <span class="at">href</span>=<span class="val">"/"</span><span class="tg">&gt;</span>Home<span class="tg">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="tg">&lt;li&gt;&lt;a</span> <span class="at">href</span>=<span class="val">"/blog"</span> <span class="at">aria-current</span>=<span class="val">"page"</span><span class="tg">&gt;</span>Blog<span class="tg">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="tg">&lt;/ul&gt;</span>
+    <span class="tg">&lt;/nav&gt;</span>
+  <span class="tg">&lt;/header&gt;</span>
+
+  <span class="tg">&lt;main&gt;</span>
+
+    <span class="cmt">&lt;!-- article: independent, syndicate-able content --&gt;</span>
+    <span class="tg">&lt;article&gt;</span>
+      <span class="tg">&lt;header&gt;</span> <span class="cmt">&lt;!-- article's own header --&gt;</span>
+        <span class="tg">&lt;h1&gt;</span>Why MongoDB is Great for E-commerce<span class="tg">&lt;/h1&gt;</span>
+        <span class="tg">&lt;p&gt;</span>By <span class="tg">&lt;address&gt;&lt;a</span> <span class="at">href</span>=<span class="val">"mailto:author@site.com"</span><span class="tg">&gt;</span>Jane Doe<span class="tg">&lt;/a&gt;&lt;/address&gt;</span>
+           Published <span class="tg">&lt;time</span> <span class="at">datetime</span>=<span class="val">"2025-05-09"</span><span class="tg">&gt;</span>May 9, 2025<span class="tg">&lt;/time&gt;&lt;/p&gt;</span>
+      <span class="tg">&lt;/header&gt;</span>
+
+      <span class="cmt">&lt;!-- section: thematic grouping with a heading --&gt;</span>
+      <span class="tg">&lt;section&gt;</span>
+        <span class="tg">&lt;h2&gt;</span>Introduction<span class="tg">&lt;/h2&gt;</span>
+        <span class="tg">&lt;p&gt;</span>Document databases offer flexibility...<span class="tg">&lt;/p&gt;</span>
+      <span class="tg">&lt;/section&gt;</span>
+
+      <span class="tg">&lt;section&gt;</span>
+        <span class="tg">&lt;h2&gt;</span>Key Benefits<span class="tg">&lt;/h2&gt;</span>
+        <span class="tg">&lt;p&gt;</span>Flexible schemas mean...<span class="tg">&lt;/p&gt;</span>
+      <span class="tg">&lt;/section&gt;</span>
+
+      <span class="tg">&lt;footer&gt;</span> <span class="cmt">&lt;!-- article's own footer --&gt;</span>
+        <span class="tg">&lt;p&gt;</span>Tags: <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"/tags/mongodb"</span> <span class="at">rel</span>=<span class="val">"tag"</span><span class="tg">&gt;</span>MongoDB<span class="tg">&lt;/a&gt;&lt;/p&gt;</span>
+      <span class="tg">&lt;/footer&gt;</span>
+    <span class="tg">&lt;/article&gt;</span>
+
+    <span class="cmt">&lt;!-- aside: sidebar, related but not essential --&gt;</span>
+    <span class="tg">&lt;aside</span> <span class="at">aria-label</span>=<span class="val">"Related articles"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;h3&gt;</span>You might also like<span class="tg">&lt;/h3&gt;</span>
+      <span class="tg">&lt;ul&gt;</span>...<span class="tg">&lt;/ul&gt;</span>
+    <span class="tg">&lt;/aside&gt;</span>
+
+  <span class="tg">&lt;/main&gt;</span>
+
+  <span class="tg">&lt;footer&gt;</span>
+    <span class="tg">&lt;p&gt;</span>&amp;copy; 2025 MySite. All rights reserved.<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/footer&gt;</span>
+
+<span class="tg">&lt;/body&gt;</span></div>
+  </div>
+
+  <!-- SEMANTIC ELEMENTS TABLE -->
+  <div class="card">
+    <h3 class="ctitle"><span>📚</span> All Semantic Elements Reference</h3>
+    <table class="tbl">
+      <thead><tr><th>Element</th><th>Meaning</th><th>Key Rules</th><th>Used on</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;header&gt;</code></td><td>Intro/header content</td><td>Can appear multiple times (page, article, section)</td><td>News sites, blogs, portfolios</td></tr>
+        <tr><td><code>&lt;nav&gt;</code></td><td>Navigation links</td><td>Only for MAJOR navigation blocks, not all link groups</td><td>Navbar, breadcrumbs, pagination</td></tr>
+        <tr><td><code>&lt;main&gt;</code></td><td>Primary page content</td><td>Only ONE per page. Not inside header/footer/nav/aside</td><td>Every page</td></tr>
+        <tr><td><code>&lt;article&gt;</code></td><td>Independent, self-contained</td><td>Should make sense syndicated on its own (RSS feed)</td><td>Blog posts, news, comments, tweets</td></tr>
+        <tr><td><code>&lt;section&gt;</code></td><td>Thematic group with heading</td><td>Should have an h2/h3 heading. Not a generic div replacement</td><td>Chapter divisions, grouped content</td></tr>
+        <tr><td><code>&lt;aside&gt;</code></td><td>Tangentially related content</td><td>Sidebars, pull quotes, ads, author bios</td><td>Blogs, news articles</td></tr>
+        <tr><td><code>&lt;footer&gt;</code></td><td>Footer for nearest ancestor</td><td>Can be page footer or article/section footer</td><td>Copyright, author info, post metadata</td></tr>
+        <tr><td><code>&lt;time&gt;</code></td><td>Date/time value</td><td>datetime= gives machine-readable format</td><td>Publish dates, event times</td></tr>
+        <tr><td><code>&lt;address&gt;</code></td><td>Contact info</td><td>For article/page author. Not just any address</td><td>Author email, social links</td></tr>
+        <tr><td><code>&lt;figure&gt;</code></td><td>Self-contained media</td><td>Images, code, charts. Use with &lt;figcaption&gt;</td><td>Article images, diagrams, code examples</td></tr>
+        <tr><td><code>&lt;figcaption&gt;</code></td><td>Caption for &lt;figure&gt;</td><td>First or last child of &lt;figure&gt;</td><td>Photo captions, chart labels</td></tr>
+        <tr><td><code>&lt;mark&gt;</code></td><td>Highlighted/relevant text</td><td>For search result highlighting, references</td><td>Search result pages, quoted text</td></tr>
+        <tr><td><code>&lt;cite&gt;</code></td><td>Citation/reference</td><td>Title of a work (book, film, article name)</td><td>References, bibliographies</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: How Google Reads Semantic HTML</div>
+    <p style="color:var(--txt2)">When Googlebot crawls a page, semantic HTML gives it strong signals: <code style="color:var(--cyan)">&lt;article&gt;</code> tells it this is a distinct piece of content. <code style="color:var(--cyan)">&lt;time datetime="..."&gt;</code> tells it exactly when the content was published (crucial for "fresh" ranking). <code style="color:var(--cyan)">&lt;nav&gt;</code> helps it understand your site's link structure. <code style="color:var(--cyan)">&lt;main&gt;</code> tells it to focus there and ignore boilerplate headers/footers. Medium, BBC, and The Guardian all use precise semantic HTML — that's partly why their articles rank so well. A page full of &lt;div&gt;s forces Google to guess at structure. A semantically marked-up page hands it a map.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: What is semantic HTML and why does it matter?</strong><br>HTML where the tag communicates meaning, not just visual style. Matters for: (1) SEO — search engines understand content structure. (2) Accessibility — screen readers navigate by landmarks. (3) Maintainability — code self-documents. (4) CSS/JS targeting — easier to write selectors like article > header vs div.container > div.top.</li>
+      <li><strong>Q: Difference between &lt;article&gt; and &lt;section&gt;?</strong><br>&lt;article&gt; is independently redistributable — would still make sense as a standalone RSS feed item, tweet, or blog post. &lt;section&gt; is just thematic grouping within a page — it needs surrounding context. A page can have one &lt;article&gt; with multiple &lt;section&gt;s, or multiple &lt;article&gt;s (like a news feed).</li>
+      <li><strong>Q: Can &lt;header&gt; and &lt;footer&gt; appear multiple times?</strong><br>Yes. They can be used for page-level header/footer AND as headers/footers inside &lt;article&gt; or &lt;section&gt; elements. Only &lt;main&gt; is restricted to one per page.</li>
+      <li><strong>Q: When should you use &lt;div&gt; instead of semantic elements?</strong><br>When no semantic element accurately describes the content. &lt;div&gt; is for layout and styling hooks when there's no semantic meaning to convey. Rule of thumb: always ask "is there a more meaningful element?" first. If yes, use it. If no, use &lt;div&gt;.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SECTION 3 — INTERACTIVE ELEMENTS              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="interactive" class="sec">
+  <h2 class="stitle">Interactive HTML Elements</h2>
+  <p class="ssub">HTML5 brought powerful interactive elements that work with zero JavaScript. Use them — they're accessible, keyboard-navigable, and cross-browser by default.</p>
+
+  <!-- DETAILS / SUMMARY -->
+  <div class="card">
+    <h3 class="ctitle"><span>🪗</span> &lt;details&gt; + &lt;summary&gt; — Zero-JS Accordion</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">The original FAQ accordion pattern. No JavaScript, no click handlers, fully accessible, keyboard-navigable. Click any question below.</p>
+
+    <div class="code" data-lang="HTML"><span class="tg">&lt;details&gt;</span>
+  <span class="cmt">&lt;!-- summary is the always-visible clickable trigger --&gt;</span>
+  <span class="tg">&lt;summary&gt;</span>What is the difference between == and === in JavaScript?<span class="tg">&lt;/summary&gt;</span>
+  <span class="cmt">&lt;!-- Everything else is hidden until opened --&gt;</span>
+  <span class="tg">&lt;p&gt;</span>== does type coercion (1 == "1" is true). === checks type AND value (1 === "1" is false). Always use ===.<span class="tg">&lt;/p&gt;</span>
+<span class="tg">&lt;/details&gt;</span>
+
+<span class="cmt">&lt;!-- open attribute = expanded by default --&gt;</span>
+<span class="tg">&lt;details</span> <span class="at">open</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;summary&gt;</span>This one starts open<span class="tg">&lt;/summary&gt;</span>
+  <span class="tg">&lt;p&gt;</span>Content visible immediately.<span class="tg">&lt;/p&gt;</span>
+<span class="tg">&lt;/details&gt;</span></div>
+
+    <div style="margin-top:1.5rem">
+      <p style="color:var(--txt2);margin-bottom:1rem"><strong style="color:var(--txt)">Live Demo — Interview FAQ accordion:</strong></p>
+      <div class="demo">
+        <details class="faq-item">
+          <summary>What happens when you type a URL and press Enter?</summary>
+          <p>DNS lookup → TCP handshake → HTTP/HTTPS request → Server processes → Response received → Browser parses HTML → DOM built → CSS applied → JS executed → Page rendered. Each step can be optimised with caching, CDNs, and compression.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Difference between localStorage and sessionStorage?</summary>
+          <p>Both store key-value pairs in the browser. localStorage persists until explicitly cleared (survives tab close, browser restart). sessionStorage is cleared when the tab closes. Both are synchronous and limited to ~5MB. Neither is secure for sensitive data — servers can't set them.</p>
+        </details>
+        <details class="faq-item" open>
+          <summary>What is the Critical Rendering Path? (starts open)</summary>
+          <p>The sequence: Parse HTML → Build DOM → Parse CSS → Build CSSOM → Combine into Render Tree → Layout (positions/sizes) → Paint (pixels) → Composite (layers/GPU). Optimising it (minimize render-blocking resources, inline critical CSS) is key to fast First Contentful Paint.</p>
+        </details>
+        <details class="faq-item">
+          <summary>When should you NOT use semantic HTML?</summary>
+          <p>When you only need a generic container for styling/JS purposes and no semantic element fits. Also inside highly dynamic React/Vue components where the structure changes constantly — though even then, keeping semantic roots (main, header) at the app level is good practice.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="ok-box"><strong>✅ Why this beats custom JS accordions:</strong> Works without JavaScript (resilient). Keyboard accessible (Enter/Space to toggle). Screen readers announce "expanded" / "collapsed" states automatically. Browser remembers open state on back navigation. Only add JavaScript if you need group behaviour (one open at a time).</div>
+  </div>
+
+  <!-- DIALOG -->
+  <div class="card">
+    <h3 class="ctitle"><span>💬</span> &lt;dialog&gt; — Native Modal</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">The native dialog element is the correct way to build modals in 2024+. It handles focus trapping, Escape key, backdrop, and accessibility out of the box.</p>
+
+    <div class="code" data-lang="HTML"><span class="tg">&lt;dialog</span> <span class="at">id</span>=<span class="val">"confirmDialog"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;h3&gt;</span>Delete Account<span class="tg">&lt;/h3&gt;</span>
+  <span class="tg">&lt;p&gt;</span>This action cannot be undone. Are you sure?<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;menu&gt;</span>
+    <span class="cmt">&lt;!-- method="dialog" closes dialog on submit --&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">value</span>=<span class="val">"cancel"</span>  <span class="at">formmethod</span>=<span class="val">"dialog"</span><span class="tg">&gt;</span>Cancel<span class="tg">&lt;/button&gt;</span>
+    <span class="tg">&lt;button</span> <span class="at">value</span>=<span class="val">"confirm"</span> <span class="at">formmethod</span>=<span class="val">"dialog"</span><span class="tg">&gt;</span>Delete<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;/menu&gt;</span>
+<span class="tg">&lt;/dialog&gt;</span>
+
+<span class="kw">&lt;script&gt;</span>
+<span class="kw">const</span> dialog = document.getElementById(<span class="str">'confirmDialog'</span>);
+
+<span class="cmt">// showModal() = traps focus inside + adds backdrop</span>
+<span class="cmt">// show()      = non-modal (no backdrop, no focus trap)</span>
+document.getElementById(<span class="str">'openBtn'</span>).addEventListener(<span class="str">'click'</span>, () =&gt; {
+  dialog.showModal();
+});
+
+dialog.addEventListener(<span class="str">'close'</span>, () =&gt; {
+  console.log(<span class="str">'User chose:'</span>, dialog.returnValue); <span class="cmt">// 'cancel' or 'confirm'</span>
+});
+<span class="kw">&lt;/script&gt;</span></div>
+
+    <div style="margin-top:1.5rem">
+      <p style="color:var(--txt2);margin-bottom:1rem"><strong style="color:var(--txt)">Live Demo:</strong></p>
+      <button class="btn" onclick="document.getElementById('d1').showModal()">🗑 Open Delete Confirmation</button>
+      <button class="btn" onclick="document.getElementById('d2').showModal()">📝 Open Form Modal</button>
+      <button class="btn" onclick="document.getElementById('d3').show()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan)">ℹ️ Non-modal (show)</button>
+
+      <dialog id="d1" class="dialog-demo">
+        <div class="dialog-inner">
+          <h3>⚠️ Delete Account</h3>
+          <p>This will permanently delete your account and all data. This action cannot be undone.</p>
+          <div class="dialog-btns">
+            <button class="d-btn-cancel" onclick="document.getElementById('d1').close('cancel')">Cancel</button>
+            <button class="d-btn-confirm" onclick="document.getElementById('d1').close('confirm');showToast('Account deleted (demo)')">Delete Account</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog id="d2" class="dialog-demo">
+        <div class="dialog-inner">
+          <h3>✏️ Quick Edit</h3>
+          <p>Update your display name:</p>
+          <input type="text" value="John Doe" style="width:100%;padding:.6rem;border:2px solid #ddd;border-radius:6px;margin-bottom:1.25rem;font-family:'Manrope',sans-serif">
+          <div class="dialog-btns">
+            <button class="d-btn-cancel" onclick="document.getElementById('d2').close()">Cancel</button>
+            <button class="d-btn-confirm" onclick="document.getElementById('d2').close();showToast('Name updated!')">Save</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog id="d3" style="border:2px solid var(--cyan);border-radius:12px;padding:1.25rem;background:var(--bg2);color:var(--txt);font-family:'Manrope',sans-serif;top:50%;right:1rem">
+        <p style="color:var(--txt2);margin-bottom:.75rem">ℹ️ Non-modal: no backdrop, page still interactive.</p>
+        <button class="btn" onclick="document.getElementById('d3').close()">Close</button>
+      </dialog>
+
+      <div id="toast" style="position:fixed;bottom:2rem;right:2rem;background:var(--ok);color:#fff;padding:1rem 1.5rem;border-radius:8px;font-weight:600;display:none;z-index:9999;font-family:'Manrope',sans-serif"></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS + METER -->
+  <div class="card">
+    <h3 class="ctitle"><span>📊</span> &lt;progress&gt; and &lt;meter&gt;</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- progress: task completion (0 to max) --&gt;</span>
+<span class="tg">&lt;progress</span> <span class="at">value</span>=<span class="val">"68"</span> <span class="at">max</span>=<span class="val">"100"</span><span class="tg">&gt;</span>68%<span class="tg">&lt;/progress&gt;</span>
+
+<span class="cmt">&lt;!-- Indeterminate (no value) — spinning/unknown duration --&gt;</span>
+<span class="tg">&lt;progress&gt;</span>Loading...<span class="tg">&lt;/progress&gt;</span>
+
+<span class="cmt">&lt;!-- meter: scalar measurement within a known range --&gt;</span>
+<span class="cmt">&lt;!-- low/high/optimum control colour: green/yellow/red --&gt;</span>
+<span class="tg">&lt;meter</span> <span class="at">value</span>=<span class="val">"85"</span> <span class="at">min</span>=<span class="val">"0"</span> <span class="at">max</span>=<span class="val">"100"</span>
+       <span class="at">low</span>=<span class="val">"30"</span> <span class="at">high</span>=<span class="val">"80"</span> <span class="at">optimum</span>=<span class="val">"50"</span><span class="tg">&gt;</span>85 out of 100<span class="tg">&lt;/meter&gt;</span></div>
+
+    <div class="demo progress-demo">
+      <label>File Upload Progress (determinate)</label>
+      <progress id="uploadProg" value="0" max="100"></progress>
+      <label>Buffering / Loading (indeterminate)</label>
+      <progress></progress>
+      <label>Disk Usage — 85GB of 100GB (turns red — above high=80)</label>
+      <meter value="85" min="0" max="100" low="30" high="80" optimum="50" style="width:100%;height:24px"></meter>
+      <label>Battery Level — 42% (turns yellow — below high=80)</label>
+      <meter value="42" min="0" max="100" low="20" high="80" optimum="100" style="width:100%;height:24px"></meter>
+      <label>Password Strength — 72% (green — near optimum=100)</label>
+      <meter value="72" min="0" max="100" low="30" high="60" optimum="100" style="width:100%;height:24px"></meter>
+      <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+        <button class="btn" onclick="simulateUpload()">▶ Simulate File Upload</button>
+        <button class="btn" onclick="document.getElementById('uploadProg').value=0">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATALIST -->
+  <div class="card">
+    <h3 class="ctitle"><span>🔍</span> &lt;datalist&gt; — Native Autocomplete</h3>
+    <p style="color:var(--txt2);margin-bottom:1rem">Pairs with &lt;input&gt; to provide suggestion dropdown — like Google's search autocomplete, without JavaScript.</p>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- list= on input links to datalist id= --&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"text"</span> <span class="at">list</span>=<span class="val">"frameworks"</span> <span class="at">placeholder</span>=<span class="val">"Search framework..."</span><span class="tg">&gt;</span>
+
+<span class="tg">&lt;datalist</span> <span class="at">id</span>=<span class="val">"frameworks"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="val">"React"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="val">"Vue"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="val">"Angular"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="val">"Svelte"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;option</span> <span class="at">value</span>=<span class="val">"Next.js"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/datalist&gt;</span></div>
+    <div class="demo">
+      <label style="display:block;font-weight:600;margin-bottom:.5rem;color:#555">Try it — type "r" or "v":</label>
+      <input type="text" list="fwList" placeholder="Search framework..." style="width:100%;padding:.7rem;border:2px solid #ddd;border-radius:8px;font-size:1rem;font-family:'Manrope',sans-serif">
+      <datalist id="fwList">
+        <option value="React"><option value="Vue"><option value="Angular">
+        <option value="Svelte"><option value="Next.js"><option value="Nuxt.js">
+        <option value="Remix"><option value="Astro"><option value="SolidJS">
+      </datalist>
+    </div>
+  </div>
+
+  <!-- LINKS & BUTTONS -->
+  <div class="card">
+    <h3 class="ctitle"><span>🔗</span> Links, Buttons & Accessibility Rules</h3>
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- ── LINKS: for navigation ── --&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"/dashboard"</span><span class="tg">&gt;</span>Go to Dashboard<span class="tg">&lt;/a&gt;</span>
+
+<span class="cmt">&lt;!-- External link: rel="noopener noreferrer" REQUIRED for security --&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"https://github.com"</span> <span class="at">target</span>=<span class="val">"_blank"</span> <span class="at">rel</span>=<span class="val">"noopener noreferrer"</span><span class="tg">&gt;</span>
+  GitHub (opens in new tab)
+<span class="tg">&lt;/a&gt;</span>
+
+<span class="cmt">&lt;!-- Download link --&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"/resume.pdf"</span> <span class="at">download</span>=<span class="val">"JohnDoe_Resume.pdf"</span><span class="tg">&gt;</span>Download Resume<span class="tg">&lt;/a&gt;</span>
+
+<span class="cmt">&lt;!-- Tel / mailto --&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"tel:+8801XXXXXXXXX"</span><span class="tg">&gt;</span>Call Us<span class="tg">&lt;/a&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"mailto:hello@example.com"</span><span class="tg">&gt;</span>Email Us<span class="tg">&lt;/a&gt;</span>
+
+<span class="cmt">&lt;!-- ── BUTTONS: for actions ── --&gt;</span>
+<span class="tg">&lt;button</span> <span class="at">type</span>=<span class="val">"button"</span> <span class="at">onclick</span>=<span class="val">"handleClick()"</span><span class="tg">&gt;</span>Perform Action<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;button</span> <span class="at">type</span>=<span class="val">"submit"</span><span class="tg">&gt;</span>Submit Form<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;button</span> <span class="at">type</span>=<span class="val">"button"</span> <span class="at">disabled</span> <span class="at">aria-disabled</span>=<span class="val">"true"</span><span class="tg">&gt;</span>Unavailable<span class="tg">&lt;/button&gt;</span>
+
+<span class="cmt">&lt;!-- ⛔ WRONG — never use div as button --&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">onclick</span>=<span class="val">"doSomething()"</span> <span class="at">class</span>=<span class="val">"btn"</span><span class="tg">&gt;</span>Click<span class="tg">&lt;/div&gt;</span>
+<span class="cmt">&lt;!-- ❌ Not keyboard accessible. No Enter/Space. No focus. No role. --&gt;</span></div>
+
+    <div class="grid">
+      <div class="kbox"><h4>Use &lt;a&gt; when…</h4><p>…navigating to a URL, downloading a file, triggering tel:/mailto:. Has an href. Right-click menu, open-in-new-tab all work correctly.</p></div>
+      <div class="kbox"><h4>Use &lt;button&gt; when…</h4><p>…performing an action with no URL: submit form, open modal, toggle dark mode, add to cart. Keyboard accessible by default.</p></div>
+      <div class="kbox"><h4>Never use &lt;div onclick&gt;</h4><p>Not focusable by keyboard. No Enter/Space trigger. Screen readers won't announce it. If you must, add tabindex="0", role="button", and keyboard handlers. Just use &lt;button&gt;.</p></div>
+      <div class="kbox"><h4>rel="noopener noreferrer"</h4><p>Security: without it, the new page's window.opener references your page and could redirect it. Always add when using target="_blank". Modern browsers partially fix this but always include it.</p></div>
+    </div>
+  </div>
+
+  <!-- ACCESSIBILITY QUICK WINS -->
+  <div class="card">
+    <h3 class="ctitle"><span>♿</span> Accessibility Quick Wins — ARIA Essentials</h3>
+    <p style="color:var(--txt2);margin-bottom:1.5rem">Accessibility isn't optional — it's the law in many countries and directly affects ~15% of users. These ARIA attributes cost nothing to add.</p>
+
+    <div class="a11y-score">
+      <div class="a11y-card"><div class="a11y-num score-bad">1.3B</div><div class="a11y-label">People with disabilities worldwide</div></div>
+      <div class="a11y-card"><div class="a11y-num score-warn">97%</div><div class="a11y-label">Of home pages have accessibility failures</div></div>
+      <div class="a11y-card"><div class="a11y-num score-good">+12%</div><div class="a11y-label">SEO boost from accessible sites</div></div>
+      <div class="a11y-card"><div class="a11y-num score-good">4×</div><div class="a11y-label">More likely to succeed with correct semantic HTML</div></div>
+    </div>
+
+    <div class="code" data-lang="HTML"><span class="cmt">&lt;!-- LABELS — every input must have an associated label --&gt;</span>
+<span class="tg">&lt;label</span> <span class="at">for</span>=<span class="val">"search"</span><span class="tg">&gt;</span>Search products<span class="tg">&lt;/label&gt;</span>
+<span class="tg">&lt;input</span> <span class="at">type</span>=<span class="val">"search"</span> <span class="at">id</span>=<span class="val">"search"</span> <span class="at">aria-label</span>=<span class="val">"Search products"</span><span class="tg">&gt;</span>
+
+<span class="cmt">&lt;!-- SKIP LINK — lets keyboard users skip to main content --&gt;</span>
+<span class="tg">&lt;a</span> <span class="at">href</span>=<span class="val">"#main"</span> <span class="at">class</span>=<span class="val">"skip-link"</span><span class="tg">&gt;</span>Skip to main content<span class="tg">&lt;/a&gt;</span>
+
+<span class="cmt">&lt;!-- ARIA ROLES — when semantic element not possible --&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">role</span>=<span class="val">"alert"</span> <span class="at">aria-live</span>=<span class="val">"polite"</span><span class="tg">&gt;</span>Form submitted successfully!<span class="tg">&lt;/div&gt;</span>
+
+<span class="cmt">&lt;!-- ARIA LABELS — describe icon-only buttons --&gt;</span>
+<span class="tg">&lt;button</span> <span class="at">aria-label</span>=<span class="val">"Close modal"</span><span class="tg">&gt;</span>✕<span class="tg">&lt;/button&gt;</span>
+
+<span class="cmt">&lt;!-- ARIA EXPANDED — for toggles/accordions --&gt;</span>
+<span class="tg">&lt;button</span> <span class="at">aria-expanded</span>=<span class="val">"false"</span> <span class="at">aria-controls</span>=<span class="val">"menu"</span><span class="tg">&gt;</span>Menu<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;ul</span> <span class="at">id</span>=<span class="val">"menu"</span> <span class="at">hidden</span><span class="tg">&gt;</span>...<span class="tg">&lt;/ul&gt;</span>
+
+<span class="cmt">&lt;!-- LANG ATTRIBUTE — helps screen readers pick correct language engine --&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="val">"en"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;p</span> <span class="at">lang</span>=<span class="val">"bn"</span><span class="tg">&gt;</span>আমার সোনার বাংলা<span class="tg">&lt;/p&gt;</span> <span class="cmt">&lt;!-- inline language switch --&gt;</span>
+
+<span class="cmt">&lt;!-- TABINDEX — control keyboard focus order --&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">tabindex</span>=<span class="val">"0"</span><span class="tg">&gt;</span>Focusable div (use button instead if possible)<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">tabindex</span>=<span class="val">"-1"</span><span class="tg">&gt;</span>Programmatically focusable only (JS focus() calls)<span class="tg">&lt;/div&gt;</span></div>
+  </div>
+
+  <div class="rw">
+    <div class="rw-t">🌟 Real-World: Twitter/X's Accessibility Implementation</div>
+    <p style="color:var(--txt2)">The like button on Twitter/X looks like a simple ❤️, but inspect it and you'll find: <code style="color:var(--cyan)">role="button"</code>, <code style="color:var(--cyan)">aria-label="Like this tweet"</code>, <code style="color:var(--cyan)">aria-pressed="false"</code> (becomes "true" after click). The notification counter has <code style="color:var(--cyan)">aria-live="polite"</code> so screen readers announce new numbers without interrupting. The tweet composer has <code style="color:var(--cyan)">aria-multiline="true"</code> and <code style="color:var(--cyan)">aria-label="Tweet text"</code>. All modals use &lt;dialog&gt; with focus trapping. This isn't charity — Twitter has paid settlements for accessibility lawsuits. Proper ARIA is legal protection as much as UX.</p>
+  </div>
+
+  <div class="tips">
+    <div class="tips-t">💼 Interview Questions</div>
+    <ul>
+      <li><strong>Q: What is ARIA and when should you use it?</strong><br>Accessible Rich Internet Applications — attributes that add semantic meaning when HTML alone can't express it. Rule: "No ARIA is better than bad ARIA." First try native semantic HTML. Use ARIA only when: building custom widgets (tabs, sliders, tree views), icon-only buttons need labels, or dynamic content needs live announcements (aria-live).</li>
+      <li><strong>Q: What is rel="noopener noreferrer" and why is it important?</strong><br>Security pair for target="_blank". noopener: new page can't access window.opener (prevents redirect attacks — malicious page redirects your page to phishing site). noreferrer: also hides the referring URL from the destination (privacy). Always use both together on external links.</li>
+      <li><strong>Q: Difference between &lt;progress&gt; and &lt;meter&gt;?</strong><br>&lt;progress&gt; = temporal completion (file upload, loading steps — moving toward a goal). &lt;meter&gt; = static measurement within a range (disk usage, score, temperature). The semantic difference matters: progress implies change over time, meter implies a current reading.</li>
+      <li><strong>Q: Why should you never use &lt;div onclick&gt; as a button?</strong><br>Keyboard inaccessible (no Tab focus, no Enter/Space trigger). No semantics (screen reader announces it as generic element). No built-in states (no :focus, :active, disabled). Costs you nothing to use &lt;button&gt;, which has all of this built in.</li>
+      <li><strong>Q: What does tabindex do?</strong><br>Controls keyboard focus order. tabindex="0": added to natural tab order. tabindex="-1": focusable via JS (.focus()) but not Tab key — used for modal dialogs to manage focus. tabindex="1+" : avoid! Creates custom focus order that's confusing and hard to maintain.</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<script>
+// TAB SWITCHING
+const progs = {'multimedia':'33%','semantic':'67%','interactive':'100%'};
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  document.getElementById('prog').style.width = progs[id] || '33%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// CANVAS SETUP
+(function(){
+  const c = document.getElementById('demoCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = 'rgba(255,121,198,0.7)';
+  ctx.fillRect(10, 10, 80, 100);
+  ctx.fillStyle = 'rgba(251,191,36,0.8)';
+  ctx.beginPath();
+  ctx.arc(150, 60, 45, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,217,255,0.7)';
+  ctx.fillRect(105, 25, 55, 90);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px Fira Code';
+  ctx.fillText('Canvas', 110, 75);
+})();
+
+// DRAW CANVAS
+(function(){
+  const canvas = document.getElementById('drawCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    if (e.touches) return {
+      x: (e.touches[0].clientX - r.left) * scaleX,
+      y: (e.touches[0].clientY - r.top) * scaleY
+    };
+    return {x:(e.clientX - r.left)*scaleX, y:(e.clientY - r.top)*scaleY};
+  }
+  canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); lastX=p.x; lastY=p.y; });
+  canvas.addEventListener('mousemove', e => {
+    if (!drawing) return;
+    const p = getPos(e);
+    const color = document.getElementById('drawColor').value;
+    const size = document.getElementById('brushSize').value;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+  });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; const p=getPos(e); lastX=p.x; lastY=p.y; }, {passive:false});
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if(!drawing) return; const p=getPos(e); const color=document.getElementById('drawColor').value; const size=document.getElementById('brushSize').value; ctx.strokeStyle=color; ctx.lineWidth=size; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; }, {passive:false});
+  canvas.addEventListener('touchend', () => drawing=false);
+  ctx.fillStyle = 'rgba(0,217,255,0.15)';
+  ctx.font = '16px Manrope';
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fillText('✏️  Draw here — change colour and brush size below', 20, 105);
+})();
+
+function clearCanvas() {
+  const c = document.getElementById('drawCanvas');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '16px Manrope';
+  ctx.fillText('✏️  Draw here — change colour and brush size below', 20, 105);
+}
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// SIMULATE UPLOAD
+function simulateUpload() {
+  const p = document.getElementById('uploadProg');
+  p.value = 0;
+  let v = 0;
+  const interval = setInterval(() => {
+    v += Math.random() * 8 + 2;
+    if (v >= 100) { v = 100; clearInterval(interval); showToast('✅ Upload complete!'); }
+    p.value = Math.round(v);
+  }, 150);
+}
+</script>
+</body>
+</html>

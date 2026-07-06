@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Session Login</h1>
+    <p>Click login to create a server-side session.</p>
+    <p><strong>Default credentials:</strong> username: admin, password: admin</p>
+    <p>
+      Security note: if cookie security attributes are weak, attackers may attempt
+      session hijacking, CSRF, or XSS-based token theft.
+    </p>
+    <p id="login-error" style="color: #b00020; display: none">
+      Invalid username or password. Try admin / admin.
+    </p>
+
+    <!--
+      This form sends POST /login.
+      The server sets req.session.isLoggedIn = true, then issues/updates the session cookie.
+    -->
+    <form action="/login" method="POST">
+      <label for="username">Username:</label>
+      <input id="username" name="username" type="text" value="admin" required />
+      <br /><br />
+      <label for="password">Password:</label>
+      <input id="password" name="password" type="password" value="admin" required />
+      <br /><br />
+      <button type="submit">Login</button>
+    </form>
+
+    <hr />
+    <h2>Cookie Route Integration (Frontend)</h2>
+    <p>Use these links to test the cart cookie routes directly:</p>
+    <p>
+      <a href="/cart/add?item=book&qty=1">Add book</a> |
+      <a href="/cart/add?item=pen&qty=2">Add pen x2</a> |
+      <a href="/cart/view">View cart cookie</a> |
+      <a href="/cart/clear">Clear cart cookie</a>
+    </p>
+
+    <hr />
+    <h2>Class Demo Instructions</h2>
+    <ol>
+      <li>Login and open browser DevTools - Application/Storage - Cookies.</li>
+      <li>Find <code>connect.sid</code> and verify HttpOnly and SameSite are set.</li>
+      <li>
+        Go to Vault and click "Try to Steal Cookie"; session cookie should not be
+        visible in <code>document.cookie</code>.
+      </li>
+      <li>Wait 60 seconds and refresh Vault; session should expire and redirect.</li>
+      <li>
+        (Teacher demo) Temporarily disable <code>httpOnly</code> in
+        <code>server.js</code>, restart server, and show how scripts can now read
+        the cookie.
+      </li>
+    </ol>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("error") === "invalid_credentials") {
+        document.getElementById("login-error").style.display = "block";
+      }
+    </script>
+  </body>
+</html>

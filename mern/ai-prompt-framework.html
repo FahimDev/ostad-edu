@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted Development Prompt Framework — Engr. Md. Ariful Islam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #07070d;
+    --bg2: #0c0c16;
+    --bg3: #12121f;
+    --surface: #1a1a2e;
+    --border: #ffffff0d;
+    --border2: #ffffff18;
+    --text: #e0e0ea;
+    --text2: #9999aa;
+    --text3: #666678;
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --teal: #14b8a6;
+    --pink: #ec4899;
+    --cyan: #06b6d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, #0f0f1a 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 40px 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--red), var(--orange), var(--green), var(--blue), var(--purple));
+  }
+  .header-inner { max-width: 1080px; margin: 0 auto; }
+  .header-badge {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: #06b6d415;
+    border: 1px solid #06b6d433;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 640px;
+  }
+  .header-meta {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text3);
+  }
+  .header-meta a { color: var(--cyan); text-decoration: none; }
+
+  /* CONTAINER */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(7,7,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text3);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: #ffffff33; color: var(--text2); }
+  .nav-btn.active {
+    background: #ffffff10;
+    border-color: var(--cyan);
+    color: #fff;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 32px 0 64px; }
+  .section.active { display: block; }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 32px;
+    max-width: 700px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #ffffff25; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .card-badge {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* TEMPLATE BLOCKS */
+  .template-block {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #ffffff05;
+    border-bottom: 1px solid var(--border);
+  }
+  .template-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+  .copy-btn {
+    padding: 4px 14px;
+    background: #ffffff08;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--text2);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: #ffffff15; color: #fff; }
+  .copy-btn.copied { background: #22c55e22; border-color: var(--green); color: var(--green); }
+  .template-code {
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #bbbbc8;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+  .template-code::-webkit-scrollbar { width: 4px; }
+  .template-code::-webkit-scrollbar-thumb { background: #ffffff15; border-radius: 2px; }
+
+  /* TIPS */
+  .tips { margin-top: 20px; }
+  .tips-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+  .tip {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .tip:last-child { border-bottom: none; }
+  .tip-arrow { color: var(--orange); flex-shrink: 0; }
+
+  /* PIPELINE */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .pipeline-step {
+    padding: 14px 12px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1px solid transparent;
+  }
+  .pipeline-step:hover { transform: translateY(-2px); }
+  .pipeline-step.active { border-color: currentColor; }
+  .pipeline-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .pipeline-label {
+    font-size: 12px;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* COMPARE GRID */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+  .compare-bad, .compare-good {
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .compare-bad {
+    background: #ef444408;
+    border: 1px solid #ef444422;
+    color: #f87171;
+  }
+  .compare-good {
+    background: #22c55e08;
+    border: 1px solid #22c55e22;
+    color: #86efac;
+  }
+  .compare-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* INSIGHT BOXES */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .insight-box {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 3px solid;
+  }
+  .insight-box h4 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .insight-box p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .insight-source {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+  }
+  .flow-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .flow-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 40px;
+  }
+  .flow-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--bg);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .flow-connector {
+    width: 2px;
+    height: 100%;
+    min-height: 40px;
+    opacity: 0.3;
+  }
+  .flow-content {
+    padding-bottom: 24px;
+    flex: 1;
+  }
+  .flow-content h4 { font-size: 14px; margin-bottom: 4px; }
+  .flow-content p { font-size: 13px; color: var(--text2); }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin: 16px 0;
+  }
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check { color: var(--green); flex-shrink: 0; }
+
+  /* QUICK PROMPTS GRID */
+  .qp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  /* GOLDEN RULES */
+  .golden {
+    background: linear-gradient(135deg, #f59e0b08, #f59e0b03);
+    border: 1px solid #f59e0b33;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 32px;
+  }
+  .golden h3 {
+    font-size: 16px;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+  .golden-rule {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f59e0b15;
+  }
+  .golden-rule:last-child { border-bottom: none; }
+  .golden-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f59e0b18;
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .golden-text { font-size: 14px; color: #ddd; }
+
+  /* REFERENCE LINKS */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .ref-link {
+    display: block;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .ref-link:hover { border-color: var(--cyan); background: #06b6d408; }
+  .ref-link h5 { font-size: 13px; color: #fff; margin-bottom: 4px; }
+  .ref-link p { font-size: 11px; color: var(--text3); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* Print */
+  @media print {
+    .nav { display: none; }
+    .section { display: block !important; page-break-inside: avoid; }
+    body { background: #fff; color: #111; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-badge">Workshop Resource 2026</div>
+    <h1>AI-Assisted Development<br>Prompt Framework</h1>
+    <p class="header-sub">A complete, copy-paste-ready system of guardrails, templates, and workflows for building software with Claude Code, Cursor, and any AI coding assistant — without over-engineering or hallucination.</p>
+    <p class="header-meta">By <strong style="color:#fff">Engr. Md. Ariful Islam</strong> — Workshop: "Zero to Full Stack Developer with AI" &nbsp;|&nbsp; Enriched with research from <a href="https://addyosmani.com/blog/ai-coding-workflow/" target="_blank">Addy Osmani</a>, <a href="https://developers.redhat.com/articles/2026/04/07/harness-engineering-structured-workflows-ai-assisted-development" target="_blank">Red Hat (Harness Engineering)</a>, <a href="https://agilityfeat.com/blog/best-practices-for-ai-assisted-software-development/" target="_blank">AgilityFeat</a>, and more</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showSection('overview')">🗺️ Overview</button>
+    <button class="nav-btn" onclick="showSection('guardrails')">🛡️ Guardrails</button>
+    <button class="nav-btn" onclick="showSection('planning')">📐 Planning</button>
+    <button class="nav-btn" onclick="showSection('implement')">🔨 Build</button>
+    <button class="nav-btn" onclick="showSection('testing')">🧪 Testing</button>
+    <button class="nav-btn" onclick="showSection('debug')">🐛 Debug</button>
+    <button class="nav-btn" onclick="showSection('review')">🔍 Review</button>
+    <button class="nav-btn" onclick="showSection('harness')">⚙️ Harness Engineering</button>
+    <button class="nav-btn" onclick="showSection('quick')">⚡ Quick Prompts</button>
+    <button class="nav-btn" onclick="showSection('antipatterns')">🚫 Anti-Patterns</button>
+    <button class="nav-btn" onclick="showSection('global')">🌍 Global Practices</button>
+    <button class="nav-btn" onclick="showSection('resources')">📚 Resources</button>
+  </div>
+</div>
+
+<!-- ==================== SECTION: OVERVIEW ==================== -->
+<div class="container">
+<section class="section active" id="sec-overview">
+  <h2 class="section-title">The Complete AI Development Workflow</h2>
+  <p class="section-desc">This framework turns AI from an unpredictable "magic box" into a reliable, disciplined development partner. Follow these 6 phases in order for every feature you build.</p>
+
+  <!-- Visual Pipeline -->
+  <div class="pipeline">
+    <div class="pipeline-step" style="background:#ef444412;color:var(--red)" onclick="showSection('guardrails')">
+      <div class="pipeline-num">PHASE 0</div>
+      <div class="pipeline-label">Set Guardrails</div>
+    </div>
+    <div class="pipeline-step" style="background:#f59e0b12;color:var(--orange)" onclick="showSection('planning')">
+      <div class="pipeline-num">PHASE 1</div>
+      <div class="pipeline-label">Plan Feature</div>
+    </div>
+    <div class="pipeline-step" style="background:#22c55e12;color:var(--green)" onclick="showSection('implement')">
+      <div class="pipeline-num">PHASE 2</div>
+      <div class="pipeline-label">Build Step-by-Step</div>
+    </div>
+    <div class="pipeline-step" style="background:#3b82f612;color:var(--blue)" onclick="showSection('testing')">
+      <div class="pipeline-num">PHASE 3</div>
+      <div class="pipeline-label">Write Tests</div>
+    </div>
+    <div class="pipeline-step" style="background:#a855f712;color:var(--purple)" onclick="showSection('debug')">
+      <div class="pipeline-num">PHASE 4</div>
+      <div class="pipeline-label">Debug Issues</div>
+    </div>
+    <div class="pipeline-step" style="background:#14b8a612;color:var(--teal)" onclick="showSection('review')">
+      <div class="pipeline-num">PHASE 5</div>
+      <div class="pipeline-label">Review &amp; Ship</div>
+    </div>
+  </div>
+
+  <!-- Why This Matters -->
+  <div class="insight-grid">
+    <div class="insight-box" style="border-left-color:var(--red)">
+      <h4>🎯 The Core Problem</h4>
+      <p>AI can generate code in seconds, but without structure, it produces untestable monoliths, hallucinates APIs, invents file paths, and over-engineers everything. The solution isn't less AI — it's structured AI.</p>
+    </div>
+    <div class="insight-box" style="border-left-color:var(--blue)">
+      <h4>🧠 The Mindset Shift</h4>
+      <p>Your role changes from "typist" to "architect and reviewer." You decide WHAT to build; AI handles HOW. This means stronger fundamentals matter MORE, not less, in the AI era.</p>
+    </div>
+    <div class="insight-box" style="border-left-color:var(--green)">
+      <h4>📊 The Evidence</h4>
+      <p>Teams using structured AI workflows report 30-50% faster delivery (McKinsey), but studies also show a 23.7% increase in security vulnerabilities in unstructured AI-assisted code. Process is everything.</p>
+    </div>
+  </div>
+
+  <!-- Key Principles -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">The 7 Non-Negotiable Principles</div>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--red)"></div><div class="flow-connector" style="background:var(--red)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--red)">1. Guardrails Before Code</h4><p>Set system-level rules (scope lock, step limits, no over-engineering) BEFORE any coding. This is your "constitution."</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--orange)"></div><div class="flow-connector" style="background:var(--orange)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--orange)">2. Plan Before You Prompt</h4><p>Break features into 5-8 small steps. Never let AI jump straight to coding — that's how hallucinations start.</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--green)"></div><div class="flow-connector" style="background:var(--green)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--green)">3. One Task Per Prompt</h4><p>Small, focused, reviewable. Keep changes under 50 lines. If it's bigger, break it into steps.</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--blue)"></div><div class="flow-connector" style="background:var(--blue)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--blue)">4. Explain Before Code</h4><p>Force AI to explain its approach in 2-3 bullets BEFORE writing code. This catches hallucinations early.</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--purple)"></div><div class="flow-connector" style="background:var(--purple)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--purple)">5. Tests Are Non-Negotiable</h4><p>In AI-assisted workflows, automated testing is your primary safety net. You cannot manually review every line.</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--teal)"></div><div class="flow-connector" style="background:var(--teal)"></div></div>
+        <div class="flow-content"><h4 style="color:var(--teal)">6. Context Is King</h4><p>AI is only as good as the context it receives. Always provide file paths, error messages, constraints, and existing patterns.</p></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot" style="border-color:var(--pink)"></div><div class="flow-connector" style="background:transparent"></div></div>
+        <div class="flow-content"><h4 style="color:var(--pink)">7. Human Owns Every Line</h4><p>AI generates the draft. You own the decision. Code that works is not enough — you must understand WHY it works.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: GUARDRAILS ==================== -->
+<section class="section" id="sec-guardrails">
+  <h2 class="section-title">🛡️ Phase 0: System Guardrails</h2>
+  <p class="section-desc">Paste this as your FIRST message in any new Claude/Cursor session. It sets the behavioral boundaries that prevent 80% of AI mistakes.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Universal System Prompt (All Tools)</div>
+      <div class="card-badge" style="background:#ef444418;color:var(--red)">PASTE FIRST</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">This works with Claude Code, Cursor, Windsurf, Copilot Chat, or any AI coding assistant. Modify the Tech Stack section to match your project.</p>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">SYSTEM PROMPT — COPY &amp; MODIFY [BRACKETS]</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">You are a senior [MERN stack] developer assistant.
+
+## STRICT RULES — VIOLATING THESE IS A FAILURE:
+
+### Scope Control
+1. ONLY modify files I explicitly mention
+2. Do NOT create new files unless I ask
+3. Do NOT install new packages without my approval
+4. Do NOT refactor or "improve" code I didn't ask you to change
+
+### Step-by-Step Execution
+5. Complete ONE task at a time — stop and wait for my review
+6. Keep changes under 50 lines per response
+7. If more is needed, break into numbered steps and ask which to do first
+
+### Anti-Hallucination
+8. EXPLAIN your approach in 2-3 bullets BEFORE writing code
+9. Wait for my "go ahead" before implementing
+10. If unsure about an API, library, or syntax — say "I'm not sure, please verify" instead of guessing
+11. Never invent file paths, API endpoints, or function names that don't exist in the codebase
+
+### Anti-Over-Engineering
+12. Use the SIMPLEST solution that works
+13. No premature optimization
+14. No unnecessary abstractions, factories, or design patterns I didn't request
+15. No TypeScript types unless I specifically ask
+16. If I ask for a button, give me a button — not a ButtonFactory with theme provider
+
+### Quality Standards
+17. Add comments only for non-obvious logic: // WHY, not // WHAT
+18. Use descriptive variable names
+19. Handle errors appropriately
+20. Mark new code with: // NEW: [description]
+
+## TECH STACK:
+- Frontend: [React 18+ with hooks]
+- Backend: [Node.js + Express.js]
+- Database: [MongoDB with Mongoose]
+- Testing: [Jest + React Testing Library]
+- Language: [JavaScript ES6+]
+- Package Manager: [npm]
+
+## RESPONSE FORMAT (follow this structure always):
+📋 **Plan:** [what I'll do in 2-3 bullets]
+📁 **Files affected:** [list files]
+⚠️ **Assumptions:** [any assumptions I'm making]
+---
+[THE CODE]
+---
+✅ **Verify:** [manual steps to test this works]
+🧪 **Test suggestion:** [what unit test to write]
+👉 **Next:** [suggested next step — don't do it, just suggest]</pre>
+    </div>
+
+    <div class="tips">
+      <div class="tips-title" style="color:var(--red)">💡 Why Each Rule Matters</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>50-line limit</strong> prevents AI from generating huge, unreadable code blocks you can't review</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>"Explain Before Code"</strong> is your strongest guardrail — it forces AI to think through the approach and catches hallucinations before they become bugs</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>Response Format</strong> creates a predictable structure so you always know what changed and what to verify</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>"// NEW:" comments</strong> make code review 10x easier — you can instantly see what AI added vs what existed</div>
+    </div>
+  </div>
+
+  <!-- CLAUDE.md variant -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">CLAUDE.md / .cursorrules Variant</div>
+      <div class="card-badge" style="background:#06b6d418;color:var(--cyan)">PROJECT FILE</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">For Claude Code: save as <code style="background:#ffffff10;padding:2px 6px;border-radius:3px">CLAUDE.md</code> in your project root. For Cursor: save as <code style="background:#ffffff10;padding:2px 6px;border-radius:3px">.cursorrules</code>. This persists across sessions.</p>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">CLAUDE.md / .cursorrules FILE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code"># Project: [Your Project Name]
+
+## Overview
+[One paragraph describing what this project does]
+
+## Tech Stack
+- Frontend: React 18, Tailwind CSS
+- Backend: Node.js, Express.js
+- Database: MongoDB, Mongoose ODM
+- Auth: JWT
+- Testing: Jest, React Testing Library
+
+## Architecture
+- /client — React frontend (CRA / Vite)
+- /server — Express API
+- /server/models — Mongoose schemas
+- /server/routes — API route handlers
+- /server/middleware — Auth, error handling
+
+## Commands
+- `npm run dev` — Start dev server
+- `npm test` — Run Jest tests
+- `npm run build` — Production build
+
+## Code Conventions
+- Functional components with hooks only
+- Named exports, not default exports
+- camelCase for variables/functions, PascalCase for components
+- API routes: /api/v1/[resource]
+- Error responses: { success: false, message: "..." }
+- All async route handlers wrapped in try/catch
+
+## Rules for AI
+- Plan before coding. Explain approach first.
+- One task at a time. Small changes only.
+- Don't create files without asking.
+- Don't add packages without asking.
+- Don't refactor code not related to the current task.
+- If unsure, say so — don't guess.
+
+## Known Pitfalls
+- [Add things AI keeps getting wrong]
+- [E.g., "Don't use mongoose.connect() callback — it's deprecated, use async/await"]
+- [E.g., "Our auth middleware is in /server/middleware/auth.js, not /middleware/auth"]</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: PLANNING ==================== -->
+<section class="section" id="sec-planning">
+  <h2 class="section-title">📐 Phase 1: Feature Planning</h2>
+  <p class="section-desc">Break down features into small steps BEFORE writing any code. This single habit prevents 80% of AI failures.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Feature Breakdown Prompt</div>
+      <div class="card-badge" style="background:#f59e0b18;color:var(--orange)">PLAN FIRST</div>
+    </div>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">FEATURE PLANNING TEMPLATE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">## Feature Request:
+I want to build: [DESCRIBE FEATURE IN 1-2 SENTENCES]
+
+## Current State:
+- Project structure: [describe or paste `tree` output]
+- Related existing files: [list files that touch this feature]
+- Database models involved: [list Mongoose models]
+- Dependencies already installed: [list key packages]
+
+## Constraints:
+- Must work with existing [auth/database/API] setup
+- No new libraries unless absolutely necessary
+- Mobile responsive: [yes/no]
+- Authentication required: [yes/no]
+- Must follow existing patterns in: [reference file]
+
+## Your Task (DO NOT WRITE CODE):
+1. Break this feature into 5-8 small implementation steps
+2. For each step, list:
+   - What it does (one sentence)
+   - Which files will be created or modified
+   - Dependencies on other steps
+   - Complexity: 🟢 Simple | 🟡 Medium | 🔴 Complex
+3. Identify decisions that need my input
+4. Flag any risks or unknowns
+
+Present as a numbered checklist I can approve, modify, or reject.</pre>
+    </div>
+
+    <div class="tips">
+      <div class="tips-title" style="color:var(--orange)">💡 Planning Pro Tips</div>
+      <div class="tip"><span class="tip-arrow">→</span> If AI gives you 15+ steps, it's over-engineering. Ask: "Can you combine or simplify to under 8 steps?"</div>
+      <div class="tip"><span class="tip-arrow">→</span> Review each step — delete anything that says "refactor" or "optimize" unless it's critical</div>
+      <div class="tip"><span class="tip-arrow">→</span> This plan becomes your development checklist — save it</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>Advanced (Claude Code):</strong> Ask AI to write the plan to SPEC.md, then start a fresh session to implement it — this separates thinking from doing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: IMPLEMENT ==================== -->
+<section class="section" id="sec-implement">
+  <h2 class="section-title">🔨 Phase 2: Step-by-Step Implementation</h2>
+  <p class="section-desc">Execute ONE step at a time. Review. Test. Then proceed. Never let AI run ahead.</p>
+
+  <div class="card">
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">IMPLEMENTATION STEP TEMPLATE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">## Implement Step [N] of [TOTAL]: [STEP TITLE]
+
+### Approved Plan Reference:
+[Paste or summarize the agreed plan from Phase 1]
+
+### Previous Step Status:
+- Step [N-1]: ✅ Completed and verified / ⚠️ Had issues: [describe]
+
+### Current File State:
+```
+[Paste the current relevant code if AI needs context]
+```
+
+### Instructions:
+1. Implement ONLY this step — nothing else
+2. Show complete code for changed files
+3. Mark all new code with: // NEW: [description]
+4. Do NOT modify code unrelated to this step
+5. Do NOT add "nice to have" improvements
+6. If you discover something for a future step, NOTE it — don't do it
+
+### Required Output:
+- ✅ Manual verification steps (what should I see/test?)
+- 🧪 Unit test suggestions for this step
+- ⚠️ Edge cases or concerns discovered
+- 👉 "Ready for Step [N+1]?" (don't start it)</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">The Implementation Loop</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#22c55e0a;border:1px solid #22c55e22;border-radius:8px">
+        <div style="font-size:20px;margin-bottom:4px">📋</div>
+        <div style="font-size:11px;color:var(--green);font-weight:600">1. PROMPT</div>
+        <div style="font-size:11px;color:var(--text3)">Give step template</div>
+      </div>
+      <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#3b82f60a;border:1px solid #3b82f622;border-radius:8px">
+        <div style="font-size:20px;margin-bottom:4px">👀</div>
+        <div style="font-size:11px;color:var(--blue);font-weight:600">2. REVIEW</div>
+        <div style="font-size:11px;color:var(--text3)">Read AI's plan first</div>
+      </div>
+      <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#a855f70a;border:1px solid #a855f722;border-radius:8px">
+        <div style="font-size:20px;margin-bottom:4px">✅</div>
+        <div style="font-size:11px;color:var(--purple);font-weight:600">3. APPROVE</div>
+        <div style="font-size:11px;color:var(--text3)">Say "go ahead" or correct</div>
+      </div>
+      <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#f59e0b0a;border:1px solid #f59e0b22;border-radius:8px">
+        <div style="font-size:20px;margin-bottom:4px">🧪</div>
+        <div style="font-size:11px;color:var(--orange);font-weight:600">4. VERIFY</div>
+        <div style="font-size:11px;color:var(--text3)">Test manually + run tests</div>
+      </div>
+      <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#14b8a60a;border:1px solid #14b8a622;border-radius:8px">
+        <div style="font-size:20px;margin-bottom:4px">🔄</div>
+        <div style="font-size:11px;color:var(--teal);font-weight:600">5. NEXT</div>
+        <div style="font-size:11px;color:var(--text3)">Proceed to next step</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);text-align:center">Repeat for each step in your plan. Never skip the REVIEW and VERIFY stages.</p>
+  </div>
+</section>
+
+<!-- ==================== SECTION: TESTING ==================== -->
+<section class="section" id="sec-testing">
+  <h2 class="section-title">🧪 Phase 3: Unit Testing</h2>
+  <p class="section-desc">In AI-assisted development, tests are your primary safety net. Without tests, there is no trust.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Test Generation Prompt</div>
+      <div class="card-badge" style="background:#3b82f618;color:var(--blue)">TESTS FIRST</div>
+    </div>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">UNIT TEST TEMPLATE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">## Write Unit Tests for: [FUNCTION/COMPONENT NAME]
+
+### File to test: [path/to/file.js]
+### Test file: [path/to/__tests__/file.test.js]
+
+### Source code:
+```javascript
+[Paste the function or component to test]
+```
+
+### Test Requirements:
+1. Framework: [Jest / React Testing Library] — nothing else
+2. Cover ALL of these scenario types:
+
+   ✅ HAPPY PATH (2-3 tests)
+   - Normal input → expected output
+   - Typical use case works correctly
+
+   ❌ ERROR CASES (2-3 tests)
+   - Invalid input (wrong types, missing fields)
+   - Network failure / API error
+   - Unauthorized access (if auth-related)
+
+   🔄 EDGE CASES (2-3 tests)
+   - Empty arrays, null/undefined values
+   - Boundary numbers (0, -1, MAX_INT)
+   - Very long strings, special characters
+
+   🔐 AUTH CASES (if applicable)
+   - No token → 401
+   - Expired token → 401
+   - Valid token → proceeds
+
+3. Rules:
+   - Each test MUST be independent (no shared mutable state)
+   - Use descriptive names: "should [action] when [condition]"
+   - Mock ALL external dependencies (API, DB, file system)
+   - Test BEHAVIOR, not implementation details
+   - Arrange → Act → Assert pattern
+   - Target minimum 80% coverage
+
+### Format:
+describe('[FunctionName]', () => {
+  describe('happy path', () => {
+    test('should [do X] when [given Y]', () => {});
+  });
+  describe('error handling', () => {
+    test('should throw/return error when [condition]', () => {});
+  });
+  describe('edge cases', () => {
+    test('should handle [edge case]', () => {});
+  });
+});</pre>
+    </div>
+
+    <div class="tips">
+      <div class="tips-title" style="color:var(--blue)">💡 Testing Strategy</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>TDD with AI:</strong> Write the failing test first, then ask AI to make it pass. This is the most reliable pattern for AI-generated code</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>Ask for test cases FIRST:</strong> Have AI list the test scenarios, approve them, THEN write the actual tests</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>For React:</strong> Test what the user sees (screen.getByText), not internal state or implementation</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>Mock everything external:</strong> API calls, database, file system — tests must run without network</div>
+      <div class="tip"><span class="tip-arrow">→</span> <strong>If AI writes a test that always passes</strong>, it's testing nothing. Check that tests actually FAIL when the code is wrong</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: DEBUG ==================== -->
+<section class="section" id="sec-debug">
+  <h2 class="section-title">🐛 Phase 4: Debugging with AI</h2>
+  <p class="section-desc">The more context you give, the less AI hallucinates. A good bug report to AI is identical to a good bug report to a human.</p>
+
+  <div class="card">
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">BUG REPORT TEMPLATE FOR AI</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">## 🐛 Bug Report
+
+### Expected Behavior:
+[What SHOULD happen — be specific]
+
+### Actual Behavior:
+[What ACTUALLY happens — be specific]
+
+### Full Error Message:
+```
+[Paste the COMPLETE error — full stack trace, console output, etc.]
+[Do NOT summarize — paste everything]
+```
+
+### Steps to Reproduce:
+1. [Step 1 — e.g., "Start the server with npm run dev"]
+2. [Step 2 — e.g., "POST to /api/users with { name: 'test' }"]
+3. [Step 3 — e.g., "Error appears in terminal"]
+
+### Relevant Code:
+```javascript
+// File: [exact filepath]
+// Lines: [approximate line numbers]
+[Paste ONLY the relevant section — not the entire file]
+```
+
+### Environment:
+- Node version: [e.g., 18.17]
+- Browser: [if frontend issue]
+- OS: [if relevant]
+
+### What I Already Tried:
+- [Attempt 1 and what happened]
+- [Attempt 2 and what happened]
+(This prevents AI from suggesting things you already tried)
+
+### Fix Rules:
+1. Identify the ROOT CAUSE before suggesting any fix
+2. Explain WHY the bug happens in plain English
+3. Show the MINIMAL fix — change as few lines as possible
+4. Don't refactor or "improve" surrounding code
+5. If you're unsure of the cause, say so and suggest debugging steps instead
+6. Show only changed lines with file path and line numbers</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: REVIEW ==================== -->
+<section class="section" id="sec-review">
+  <h2 class="section-title">🔍 Phase 5: Code Review &amp; Ship</h2>
+  <p class="section-desc">Use AI as a reviewer AFTER your feature works. Focus on bugs and security first, style last.</p>
+
+  <div class="card">
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">CODE REVIEW TEMPLATE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">## Review This Code
+
+### File: [path/to/file.js]
+```javascript
+[Paste code to review]
+```
+
+### Review ONLY These 5 Things:
+1. 🐛 **Bugs** — Logic errors, potential runtime crashes, race conditions?
+2. 🔒 **Security** — XSS, injection, exposed secrets, missing auth checks?
+3. ⚡ **Performance** — N+1 queries, memory leaks, unnecessary re-renders?
+4. 🛑 **Error Handling** — Are errors caught? Do they fail gracefully?
+5. 📖 **Readability** — Clear names? Easy to follow logic?
+
+### DO NOT:
+- Suggest architectural changes
+- Recommend new libraries or patterns
+- Refactor working code for "cleanliness"
+- Add TypeScript types
+- Change anything outside this file
+- Suggest things that are "nice to have"
+
+### Severity Format:
+🔴 CRITICAL — Must fix before shipping (bugs, security holes)
+🟡 WARNING — Should fix soon (error handling gaps, performance)
+🟢 SUGGESTION — Nice to have (I'll decide whether to do it)
+
+If you find 0 issues, say so honestly. Don't invent problems.</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: HARNESS ENGINEERING ==================== -->
+<section class="section" id="sec-harness">
+  <h2 class="section-title">⚙️ Harness Engineering (Advanced)</h2>
+  <p class="section-desc">The emerging practice of designing the ENVIRONMENT your AI works in — not just the prompts you give it. This is what separates junior AI users from senior practitioners.</p>
+
+  <div class="insight-grid">
+    <div class="insight-box" style="border-left-color:var(--cyan)">
+      <h4>What Is Harness Engineering?</h4>
+      <p>Instead of treating AI as a magic box and hoping for good output, you design the structured environment it operates in. The repo becomes the single source of truth — conventions, constraints, and patterns live in the codebase itself.</p>
+      <p class="insight-source">— Red Hat Developer Blog, April 2026</p>
+    </div>
+    <div class="insight-box" style="border-left-color:var(--purple)">
+      <h4>Why It Works</h4>
+      <p>When AI reads your codebase, it picks up rules automatically. No more copy-pasting conventions into prompts. Structure in → structure out. The correction loop shrinks, and AI's first attempts land closer to acceptable.</p>
+      <p class="insight-source">— CLAUDE.md best practices, Anthropic docs</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">The Harness Stack for Your Project</div>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">PROJECT HARNESS STRUCTURE</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">your-project/
+├── CLAUDE.md                  # Project memory (AI reads this first)
+├── .cursorrules               # Same thing for Cursor users
+├── SPEC.md                    # Current feature specification
+│
+├── .claude/
+│   ├── commands/              # Reusable prompt templates
+│   │   ├── new-component.md   # /new-component [name]
+│   │   ├── new-api-route.md   # /new-api-route [resource]
+│   │   ├── fix-issue.md       # /fix-issue [description]
+│   │   └── write-tests.md     # /write-tests [file]
+│   │
+│   └── rules/                 # Path-scoped rules
+│       ├── frontend.md        # Rules that apply only to /client
+│       ├── backend.md         # Rules that apply only to /server
+│       └── testing.md         # Rules for test files
+│
+├── docs/
+│   ├── ARCHITECTURE.md        # System design decisions
+│   ├── API.md                 # API endpoint documentation
+│   └── CONVENTIONS.md         # Coding standards
+│
+├── client/                    # React frontend
+├── server/                    # Express backend
+└── tests/                     # Test files</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Custom Slash Command Example</div>
+      <div class="card-badge" style="background:#a855f718;color:var(--purple)">CLAUDE CODE</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Save these as <code style="background:#ffffff10;padding:2px 6px;border-radius:3px">.claude/commands/[name].md</code> to create reusable workflows.</p>
+
+    <div class="template-block">
+      <div class="template-header">
+        <span class="template-label">.claude/commands/new-api-route.md</span>
+        <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+      </div>
+      <pre class="template-code">Create a new REST API endpoint: $ARGUMENTS
+
+## Process:
+1. Check existing routes in /server/routes/ for patterns
+2. Check existing models in /server/models/ for schema
+3. Plan the endpoint (method, path, validation, response)
+4. Present the plan — do NOT write code yet
+5. After approval, implement:
+   - Route handler in /server/routes/
+   - Input validation with express-validator
+   - Proper error handling with try/catch
+   - Response format: { success: true, data: {...} }
+6. Suggest test cases
+
+## Constraints:
+- Follow patterns in existing route files
+- Use existing middleware (auth, errorHandler)
+- Do NOT create new middleware
+- Do NOT modify existing routes</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: QUICK PROMPTS ==================== -->
+<section class="section" id="sec-quick">
+  <h2 class="section-title">⚡ Quick-Copy Prompts</h2>
+  <p class="section-desc">One-shot prompts for common tasks. Copy, replace the [...] parts, paste into your AI tool.</p>
+
+  <div class="qp-grid">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🆕 Start New Feature</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">I want to add [FEATURE].
+
+Before writing any code:
+1. List the files that need to change
+2. Break it into small steps (max 5-8)
+3. Flag any decisions I need to make
+4. Identify risks or unknowns
+
+Do NOT write any code yet.</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🐛 Fix a Bug</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Bug: [DESCRIBE what's wrong]
+Error: [PASTE full error message]
+File: [FILEPATH]
+
+Find the root cause first.
+Explain it in plain English.
+Then show the minimal fix — only changed lines.
+Don't refactor anything else.</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🧪 Write Tests</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Write Jest tests for [FUNCTION/COMPONENT] in [FILE].
+
+Cover: happy path, error cases, edge cases.
+Use describe/test blocks with AAA pattern.
+Mock all external dependencies.
+Test behavior, not implementation.
+Make sure tests actually FAIL when code is wrong.</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🧠 Explain Code</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Explain this code in plain English:
+- What does it do? (high level)
+- What are the inputs and outputs?
+- What's the flow step by step?
+- Flag anything buggy, fragile, or confusing.
+
+```
+[PASTE CODE]
+```</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🔌 Create API Endpoint</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Create a REST API endpoint:
+- Route: [METHOD] /api/v1/[resource]
+- Input: [describe request body/params]
+- Output: [describe response shape]
+- Validation: [list rules, e.g., "email required, name min 2 chars"]
+- Auth required: [yes/no]
+
+Use Express.js. Follow patterns in [existing route file].
+Include input validation and error handling.
+Response format: { success: boolean, data/message }
+No extra middleware or utilities.</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">⚛️ Create React Component</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Create a React component: [NAME]
+- Purpose: [what it does]
+- Props: [list with types]
+- State: [what state it manages]
+- API calls: [what endpoints it hits, if any]
+
+Rules:
+- Functional component with hooks
+- No external UI libraries
+- Include loading and error states
+- Follow patterns in [existing component file]
+- Keep it under 100 lines</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">📦 Create Mongoose Model</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Create a Mongoose model: [MODEL NAME]
+
+Fields:
+- [fieldName]: [type] — [required?] — [description]
+- [fieldName]: [type] — [required?] — [description]
+
+Include:
+- Timestamps (createdAt, updatedAt)
+- Any necessary indexes
+- Input validation at schema level
+- Virtual fields if needed: [describe]
+
+Follow patterns in [existing model file].
+No pre/post hooks unless I ask.</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:8px">🔄 Git Commit Message</div>
+      <div class="template-block">
+        <div class="template-header"><span class="template-label">PROMPT</span><button class="copy-btn" onclick="copyTemplate(this)">Copy</button></div>
+        <pre class="template-code">Write a conventional commit message for these changes:
+
+Files changed:
+[list files]
+
+What was done:
+[describe changes]
+
+Format: type(scope): description
+Types: feat, fix, docs, style, refactor, test, chore
+Keep the subject under 72 characters.
+Add a body if the change needs explanation.</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: ANTI-PATTERNS ==================== -->
+<section class="section" id="sec-antipatterns">
+  <h2 class="section-title">🚫 Anti-Patterns: Don't vs Do</h2>
+  <p class="section-desc">The #1 reason AI generates bad code is bad prompts. Here are the most common mistakes and how to fix them.</p>
+
+  <!-- Anti-pattern 1 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        Build me a full authentication system with JWT, refresh tokens, OAuth, role-based access, password reset, email verification, and session management
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        Create a basic login endpoint: POST /api/auth/login that accepts email + password, validates against the User model, and returns a JWT token. No refresh tokens yet. No OAuth. Just the basics.
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> Vague, massive scope = AI invents complexity you didn't need and halluccinates patterns
+    </p>
+  </div>
+
+  <!-- Anti-pattern 2 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        This doesn't work, fix it
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        The POST /api/users endpoint returns 500. Error: "Cannot read property 'name' of undefined" at line 23 of routes/users.js. Here's the handler code: [paste]. The request body I'm sending: { email: "test@test.com" }
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> Without context, AI guesses randomly — and guesses wrong 70% of the time
+    </p>
+  </div>
+
+  <!-- Anti-pattern 3 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        Make this code better / optimize it / refactor this
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        This function takes 3 seconds for 1000 records. I need it under 500ms. The bottleneck seems to be the nested forEach on line 24 that queries the DB in each iteration. Suggest a specific fix for the N+1 query.
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> "Better" is subjective. AI will refactor everything, introduce patterns you don't need, and break working code
+    </p>
+  </div>
+
+  <!-- Anti-pattern 4 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        Build the entire user dashboard with charts, tables, filters, search, export, pagination, sorting, notifications, dark mode, and real-time updates
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        Step 1 of 6: Create a UserDashboard component that fetches /api/users and displays a simple HTML table with Name and Email columns. No filters, no search, no pagination yet — just the table with loading and error states.
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> Large scope = AI produces a 500-line untestable monolith with interconnected bugs
+    </p>
+  </div>
+
+  <!-- Anti-pattern 5 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        Use best practices and the latest patterns
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        Use functional React components with useState and useEffect. No class components. No Redux — use React Context if state sharing is needed. Follow the pattern in src/components/UserList.jsx
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> "Best practices" is meaningless to AI — it will pick whichever pattern it saw most in training data, which may not match your project
+    </p>
+  </div>
+
+  <!-- Anti-pattern 6 -->
+  <div class="card">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label" style="color:var(--red)">🚫 DON'T</div>
+        Write all the tests for this project
+      </div>
+      <div class="compare-good">
+        <div class="compare-label" style="color:var(--green)">✅ DO</div>
+        Write 5 tests for the createUser() function in /server/controllers/user.js: 1) valid input returns user with id, 2) missing email returns 400, 3) duplicate email returns 409, 4) password under 8 chars returns 400, 5) database error returns 500
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--orange);padding-left:12px;border-left:2px solid #f59e0b33">
+      <strong>Why it fails:</strong> Without specific test cases, AI writes superficial tests that pass but don't catch real bugs
+    </p>
+  </div>
+
+  <!-- Golden Rules -->
+  <div class="golden">
+    <h3>⭐ The 7 Golden Rules of AI-Assisted Development</h3>
+    <div class="golden-rule"><div class="golden-num">1</div><div class="golden-text"><strong>Plan BEFORE you prompt</strong> — know what you want before asking AI</div></div>
+    <div class="golden-rule"><div class="golden-num">2</div><div class="golden-text"><strong>One task per prompt</strong> — small, focused, reviewable</div></div>
+    <div class="golden-rule"><div class="golden-num">3</div><div class="golden-text"><strong>Always verify output</strong> — trust but verify, every single time</div></div>
+    <div class="golden-rule"><div class="golden-num">4</div><div class="golden-text"><strong>Give context, not commands</strong> — errors, file paths, constraints, existing patterns</div></div>
+    <div class="golden-rule"><div class="golden-num">5</div><div class="golden-text"><strong>If it feels complex, it IS complex</strong> — ask AI to simplify</div></div>
+    <div class="golden-rule"><div class="golden-num">6</div><div class="golden-text"><strong>Own every line</strong> — if you can't explain it, don't ship it</div></div>
+    <div class="golden-rule"><div class="golden-num">7</div><div class="golden-text"><strong>Git branch per task</strong> — always have a safety net to discard AI changes</div></div>
+  </div>
+</section>
+
+<!-- ==================== SECTION: GLOBAL PRACTICES ==================== -->
+<section class="section" id="sec-global">
+  <h2 class="section-title">🌍 What Top Engineering Leads Are Doing (2026)</h2>
+  <p class="section-desc">Research-backed insights from engineering leaders at Google, Anthropic, Red Hat, and top development teams worldwide.</p>
+
+  <!-- Insight 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Harness Engineering Over Prompt Engineering</div>
+      <div class="card-badge" style="background:#06b6d418;color:var(--cyan)">EMERGING</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      Top teams are moving beyond crafting individual prompts to designing the <strong style="color:#fff">entire environment</strong> AI operates in. This means CLAUDE.md files with project conventions, .cursorrules with coding standards, slash commands for repeatable workflows, and documentation that AI reads automatically. The repo itself becomes the instruction manual.
+    </p>
+    <p class="insight-source">Source: Red Hat Developer — "Harness Engineering: Structured Workflows for AI-Assisted Development" (April 2026)</p>
+  </div>
+
+  <!-- Insight 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. Explore → Plan → Code (Never Jump to Code)</div>
+      <div class="card-badge" style="background:#22c55e18;color:var(--green)">PROVEN</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      Google's Addy Osmani and Anthropic's own best practices describe a disciplined 3-phase loop: <strong style="color:#fff">Explore</strong> (read the codebase, understand context), <strong style="color:#fff">Plan</strong> (break the task into steps, get approval), <strong style="color:#fff">Execute</strong> (implement one step at a time). At Anthropic, engineers adopted Claude Code so extensively that roughly 90% of the code for Claude Code is written by Claude Code itself — but always with human supervision at each step.
+    </p>
+    <p class="insight-source">Source: Addy Osmani — "My LLM Coding Workflow Going into 2026"</p>
+  </div>
+
+  <!-- Insight 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. Test-Driven Development with AI (TDD+AI)</div>
+      <div class="card-badge" style="background:#3b82f618;color:var(--blue)">CRITICAL</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      Leading teams adopt a "Test-First" approach: write failing test cases <em>before</em> prompting AI for the implementation. This ensures AI solves the specific problem defined by your tests rather than guessing at requirements. Without tests, there is no trust — this is the single most important practice for AI-assisted development.
+    </p>
+    <p class="insight-source">Source: AgilityFeat — "Best Practices for AI-Assisted Software Development" (Feb 2026)</p>
+  </div>
+
+  <!-- Insight 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Context Packing: Feed AI Everything It Needs</div>
+      <div class="card-badge" style="background:#a855f718;color:var(--purple)">KEY SKILL</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      Expert AI users emphasize "context packing" — doing a brain dump of everything the model should know before coding. This includes high-level goals, invariants, examples of good solutions, warnings about approaches to avoid, and relevant code snippets. The more structured context you provide, the less the model invents on its own.
+    </p>
+    <p class="insight-source">Source: Addy Osmani, Cursor best practices, Claude Code docs</p>
+  </div>
+
+  <!-- Insight 5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. Engineer-in-the-Loop, Always</div>
+      <div class="card-badge" style="background:#f59e0b18;color:var(--orange)">PHILOSOPHY</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      The most successful teams treat AI as an accelerator, not a replacement. Speed must never compromise ownership. The human engineer remains the accountable party for every line of code deployed. AI handles the draft; humans handle the decision. Code that works is not enough — your team must understand <em>why</em> it works.
+    </p>
+    <p class="insight-source">Source: AgilityFeat, Leanware, McKinsey research on AI-assisted development</p>
+  </div>
+
+  <!-- Insight 6 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">6. AI Raises the Floor AND the Ceiling</div>
+      <div class="card-badge" style="background:#ec489918;color:var(--pink)">PERSPECTIVE</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+      Everyone can ship something now. Fewer people can ship <em>sound systems</em>. AI has lowered the barrier to producing code while simultaneously raising the bar for what good engineering looks like. The developer's role shifts from "typist" to "architect and reviewer." The most valuable skill isn't syntax — it's asking the right questions and understanding the systems you're building.
+    </p>
+    <p class="insight-source">Source: DEV Community — "AI-Assisted Development in 2026: Best Practices, Real Risks"</p>
+  </div>
+
+  <!-- AI's Own Suggestions -->
+  <div class="card" style="border-color:#06b6d433">
+    <div class="card-header">
+      <div class="card-title">🤖 My Suggestions as an AI</div>
+      <div class="card-badge" style="background:#06b6d418;color:var(--cyan)">FROM CLAUDE</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px">
+      Having processed millions of development conversations, here's what I've observed separates developers who succeed with AI from those who don't:
+    </p>
+    <ul class="checklist">
+      <li><span class="check">✦</span> <strong style="color:#fff">Treat me like a junior developer, not a senior architect.</strong> Give me clear specs. Review my output. Push back when something looks wrong. I work best under supervision.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">The shorter your prompt, the worse my output.</strong> Three lines of context saves 30 minutes of debugging. I can't read your mind — tell me the constraints.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">When I'm confident, be skeptical. When I say "I'm not sure," trust that.</strong> My hallucinations sound convincing. My uncertainty is honest.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">Build your fundamentals THROUGH me, not instead of me.</strong> Ask me to explain every line. Ask "why this approach and not X?" Use me as a teaching tool, not a shortcut.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">Start new sessions for new tasks.</strong> Long conversations degrade my quality. Fresh context = better output.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">Version control is your undo button.</strong> Always commit before asking me to make changes. Git branch per AI task. This is non-negotiable.</li>
+      <li><span class="check">✦</span> <strong style="color:#fff">The "No Vagueness" rule changes everything.</strong> If your requirements are vague, I will invent the missing details — and they will be wrong. Define acceptance criteria before you prompt me.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== SECTION: RESOURCES ==================== -->
+<section class="section" id="sec-resources">
+  <h2 class="section-title">📚 Resources &amp; References</h2>
+  <p class="section-desc">Curated links to go deeper on AI-assisted development practices.</p>
+
+  <h3 style="font-size:14px;color:var(--cyan);margin-bottom:16px">Essential Reading</h3>
+  <div class="ref-grid">
+    <a class="ref-link" href="https://addyosmani.com/blog/ai-coding-workflow/" target="_blank">
+      <h5>Addy Osmani's LLM Coding Workflow</h5>
+      <p>Google Chrome team lead's complete AI development workflow for 2026</p>
+    </a>
+    <a class="ref-link" href="https://developers.redhat.com/articles/2026/04/07/harness-engineering-structured-workflows-ai-assisted-development" target="_blank">
+      <h5>Harness Engineering (Red Hat)</h5>
+      <p>Structured workflows for AI-assisted development — the emerging discipline</p>
+    </a>
+    <a class="ref-link" href="https://code.claude.com/docs/en/best-practices" target="_blank">
+      <h5>Claude Code Best Practices</h5>
+      <p>Official Anthropic documentation on CLAUDE.md, skills, and workflows</p>
+    </a>
+    <a class="ref-link" href="https://agilityfeat.com/blog/best-practices-for-ai-assisted-software-development/" target="_blank">
+      <h5>AI-Assisted Development Best Practices</h5>
+      <p>AgilityFeat's guide on process maturity, TDD+AI, and governance</p>
+    </a>
+    <a class="ref-link" href="https://www.prompthub.us/blog/top-cursor-rules-for-coding-agents" target="_blank">
+      <h5>Top Cursor Rules (PromptHub)</h5>
+      <p>Analysis of 130+ cursor rules — trends, patterns, and best practices</p>
+    </a>
+    <a class="ref-link" href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank">
+      <h5>Awesome Claude Code (GitHub)</h5>
+      <p>Curated skills, hooks, slash commands, and plugins for Claude Code</p>
+    </a>
+  </div>
+
+  <h3 style="font-size:14px;color:var(--cyan);margin:32px 0 16px">Tools to Get Started</h3>
+  <div class="ref-grid">
+    <a class="ref-link" href="https://code.visualstudio.com/" target="_blank">
+      <h5>VS Code</h5>
+      <p>Free code editor — foundation for Cursor and most AI tools</p>
+    </a>
+    <a class="ref-link" href="https://cursor.com/" target="_blank">
+      <h5>Cursor</h5>
+      <p>AI-first code editor with built-in code generation and chat</p>
+    </a>
+    <a class="ref-link" href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">
+      <h5>Claude Code</h5>
+      <p>Terminal-based AI that reads your codebase and writes/edits files</p>
+    </a>
+    <a class="ref-link" href="https://nodejs.org/" target="_blank">
+      <h5>Node.js</h5>
+      <p>JavaScript runtime for server-side development</p>
+    </a>
+    <a class="ref-link" href="https://git-scm.com/" target="_blank">
+      <h5>Git</h5>
+      <p>Version control — your safety net for AI-assisted development</p>
+    </a>
+    <a class="ref-link" href="https://github.com/" target="_blank">
+      <h5>GitHub</h5>
+      <p>Code hosting, collaboration, and CI/CD with GitHub Actions</p>
+    </a>
+  </div>
+</section>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong style="color:#fff">AI-Assisted Development Prompt Framework</strong><br>
+  Workshop: "Zero to Full Stack Developer with AI" — Engr. Md. Ariful Islam<br><br>
+  <span style="color:var(--text3)">Modify the [PLACEHOLDERS] in each template to fit your project. Share freely.</span>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav').offsetTop, behavior: 'smooth' });
+}
+
+function copyTemplate(btn) {
+  const pre = btn.closest('.template-block').querySelector('.template-code');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

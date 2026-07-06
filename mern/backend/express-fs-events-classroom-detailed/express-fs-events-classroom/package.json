@@ -1,0 +1,31 @@
+{
+  "name": "express-fs-events-classroom",
+  "version": "1.0.0",
+  "description": "Educational Express.js project for fs module, sync vs async file CRUD, EventEmitter, and path module.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node src/utils/seed.js",
+    "check": "node --check server.js && node --check src/app.js && node --check src/routes/notesAsyncRoutes.js && node --check src/routes/notesSyncRoutes.js && node --check src/routes/pathRoutes.js && node --check src/routes/eventRoutes.js && node --check src/services/fileStoreAsync.js && node --check src/services/fileStoreSync.js && node --check src/events/appEvents.js && node --check src/events/listeners.js && node --check src/config/paths.js && node --check src/middleware/errorHandler.js && node --check src/utils/ensureDataFiles.js && node --check src/utils/seed.js"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "fs",
+    "events",
+    "path",
+    "education"
+  ],
+  "author": "Classroom Demo",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
