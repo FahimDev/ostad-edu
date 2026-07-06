@@ -1,0 +1,46 @@
+### Home
+GET http://localhost:5000/
+
+### Health
+GET http://localhost:5000/health
+
+### Path module demo
+GET http://localhost:5000/api/path/inspect?filename=class-notes.txt
+
+### Create async note
+POST http://localhost:5000/api/async-notes
+Content-Type: application/json
+
+{
+  "title": "Learn async fs",
+  "body": "fs/promises is preferred in web APIs."
+}
+
+### Get async notes
+GET http://localhost:5000/api/async-notes
+
+### Create sync note
+POST http://localhost:5000/api/sync-notes
+Content-Type: application/json
+
+{
+  "title": "Learn sync fs",
+  "body": "Sync fs blocks the event loop. Educational only."
+}
+
+### Get sync notes
+GET http://localhost:5000/api/sync-notes
+
+### Emit custom event
+POST http://localhost:5000/api/events/demo
+Content-Type: application/json
+
+{
+  "message": "Students triggered a custom event"
+}
+
+### Read event logs
+GET http://localhost:5000/api/events/logs
+
+### Clear event logs
+DELETE http://localhost:5000/api/events/logs
