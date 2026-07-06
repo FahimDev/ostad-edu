@@ -1,0 +1,113 @@
+@baseUrl = http://localhost:5000
+@token = paste_token_here
+
+### Health
+GET {{baseUrl}}/health
+
+### Docs
+GET {{baseUrl}}/openapi.json
+
+### Register
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "New Student",
+  "email": "newstudent@example.com",
+  "password": "password123",
+  "phone": "+8801711111111"
+}
+
+### Login
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "password": "password123"
+}
+
+### Verify Token
+GET {{baseUrl}}/api/v1/auth/verify-token
+Authorization: Bearer {{token}}
+
+### Email Verification
+POST {{baseUrl}}/api/v1/auth/email/verify
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "otp": "123456"
+}
+
+### OTP Verification
+POST {{baseUrl}}/api/v1/auth/otp/verify
+Content-Type: application/json
+
+{
+  "purpose": "login",
+  "otp": "123456"
+}
+
+### Reset Password
+POST {{baseUrl}}/api/v1/auth/password/reset
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "otp": "123456",
+  "newPassword": "newpassword123"
+}
+
+### Select Profile
+GET {{baseUrl}}/api/v1/profile/me
+Authorization: Bearer {{token}}
+
+### Update Profile
+PATCH {{baseUrl}}/api/v1/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Student",
+  "phone": "+8801811111111",
+  "bio": "I am learning Express.js with OpenAPI."
+}
+
+### Create Task
+POST {{baseUrl}}/api/v1/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Practice JWT middleware",
+  "description": "Understand token verification flow.",
+  "status": "todo",
+  "priority": "high",
+  "dueDate": "2026-07-15"
+}
+
+### Select Task List
+GET {{baseUrl}}/api/v1/tasks
+Authorization: Bearer {{token}}
+
+### Filter Task List
+GET {{baseUrl}}/api/v1/tasks?status=todo&priority=high&fromDate=2026-07-01&toDate=2026-07-31
+Authorization: Bearer {{token}}
+
+### Select Single Task
+GET {{baseUrl}}/api/v1/tasks/task_101
+Authorization: Bearer {{token}}
+
+### Update Task
+PATCH {{baseUrl}}/api/v1/tasks/task_101
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "done"
+}
+
+### Remove Task
+DELETE {{baseUrl}}/api/v1/tasks/task_101
+Authorization: Bearer {{token}}
