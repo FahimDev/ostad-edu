@@ -42,5 +42,8 @@ jobs:
       - name: Restart backend
         run: |
           cd "$APP_DIR"
-          pm2 restart ostad-open-api || pm2 start npm --name ostad-open-api -- start
+          pm2 start npm \
+            --name ostad-open-api \
+            --cwd "$APP_DIR" \
+            -- start
           pm2 save
