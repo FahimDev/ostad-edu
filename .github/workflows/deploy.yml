@@ -11,13 +11,19 @@ jobs:
     runs-on: self-hosted
 
     env:
-      APP_DIR: /home/azureuser/apps/ostad-edu/mern/backend/open-api-express
+      APP_DIR: /home/azureuser/apps/ostad-edu/mern/backend/open-api
+      SOURCE_DIR: mern/backend/open-api
 
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
 
-      - name: Sync code to production directory
+      - name: Debug structure
+        run: |
+          echo "Workspace: $GITHUB_WORKSPACE"
+          find "$GITHUB_WORKSPACE" -maxdepth 5 -name package.json -print
+
+      - name: Sync open-api only
         run: |
           mkdir -p "$APP_DIR"
 
@@ -26,11 +32,12 @@ jobs:
             --exclude '.github' \
             --exclude '.env' \
             --exclude 'node_modules' \
-            "$GITHUB_WORKSPACE/" "$APP_DIR/"
+            "$GITHUB_WORKSPACE/$SOURCE_DIR/" "$APP_DIR/"
 
       - name: Install dependencies
         run: |
           cd "$APP_DIR"
+          ls -la
           npm install
 
       - name: Restart backend
